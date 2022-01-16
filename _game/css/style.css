@@ -1,0 +1,103 @@
+body{
+    
+    padding: 0;
+    margin: 0;
+}
+
+
+#startScreen{
+    font-family: 'Press Start 2P', cursive;
+    color: #fff;
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-image:url("./../textures/stone_wall.png"), url("./../textures/stone_wall.png"), url("./../textures/stone_wall.png"), url("./../textures/stone_wall.png"), url("./../textures/stone_wall.png"), url("./../textures/stone_wall.png");
+	background-position:0 0, 0 32px,0 64px, 0 96px, 0 128px;
+	background-repeat:repeat-x, repeat-x, repeat-x, repeat-x, repeat-x, repeat-x;
+   
+    text-shadow: 5px 5px #000;
+
+}
+#startScreen > p{
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 100px; 
+    margin: 0;
+}
+#buttonPanel{
+    width: 138px;
+    height: 138px;
+    background-color: rgba(255, 255, 255, 250);
+    border: 3px solid #444;
+    position: absolute;
+    top:0;
+    right: 0;
+}
+.keyButton{
+    width: 40px;
+    height: 40px;
+    margin: 1px;
+    background-color: rgba(200, 200, 200, 250);
+    text-align: center;
+    line-height: 40px;
+    border: 2px solid;
+    float: left;
+}
+.keyButtonLong{
+    height: 40px;
+    margin: 1px;
+    background-color: rgba(200, 200, 200, 250);
+    text-align: center;
+    line-height: 40px;
+    border: 2px solid;
+    float: left;
+    width: 132px;
+}
+.keyClicked{
+    background-color: rgba(0, 250, 0, 250);
+    border-color: rgba(0, 100, 0, 250);
+    color:rgba(0, 100, 0, 250);
+}
+
+#startButton{
+    height: 100px;
+    width: 20%;
+    line-height: 100px;
+    border: 2px solid black;
+    margin: 0 auto;
+    display: block;
+    margin-top: 50px;
+}
+#startButton:hover{
+    background-color: aquamarine;
+}
+.hide
+{
+    visibility: hidden;
+}
+.show
+{
+    visibility: visible;
+}
+footer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    color: white;
+    text-align: center;
+    font-size: 50px; 
+    background-image:url("./../textures/stone_wall.png"), url("./../textures/stone_wall.png"), url("./../textures/stone_wall.png"), url("./../textures/stone_wall.png"), url("./../textures/stone_wall.png"), url("./../textures/stone_wall.png");
+	background-position:0 0, 0 32px,0 64px, 0 96px, 0 128px;
+	background-repeat:repeat-x, repeat-x, repeat-x, repeat-x, repeat-x, repeat-x;
+    height: 128px;
+    padding-top: 10px;
+   
+}
+
+footer > img{
+    height: 100px;
+}
