@@ -1,5 +1,5 @@
 
-
+/*
 function gameInit(axlesHelper) {
   (axlesHelper) ? gameComponent.setAxlesHelper() : null ;
   gameComponent.setAambientLight();
@@ -8,19 +8,26 @@ function gameInit(axlesHelper) {
   generarateMap();
   gameComponent.renderer();
   
-}
+}*/
 //==================================================================================================================================================================================
 //====================================================================                                         =====================================================================
 //====================================================================     FUNKCJE POMOCNICZE/DIAGNOSTYCZNE    =====================================================================
 //====================================================================                                         =====================================================================
 //==================================================================================================================================================================================
 
-function displaCameraPosition(){
-  document.getElementById("cameraPosition").innerHTML = 'X: ' + gameComponent.camera.position.x.toFixed(3) + 
+function displayCameraPosition(){
+  document.getElementById("cameraPosition").innerHTML = 'Camera position:<br/>X: ' + gameComponent.camera.position.x.toFixed(3) + 
                                                       '<br/>Y: ' + gameComponent.camera.position.y.toFixed(3) +
                                                       '<br/>Z: ' + gameComponent.camera.position.z.toFixed(3);
 }
-
+function displayPlayerPosition(){
+  document.getElementById("playerPosition").innerHTML = 'Player position:<br/>X: ' + player.mesh.position.x.toFixed(3) + 
+                                                      '<br/>Y: ' + player.mesh.position.y.toFixed(3) +
+                                                      '<br/>Z: ' + player.mesh.position.z.toFixed(3);
+}
+function displayPlayerOnBlock(){
+  document.getElementById("playerOnBlock").innerHTML = "Player on block:<br/>X: " + Math.round(player.mesh.position.x) + "<br/>Y: "+ Math.round(player.mesh.position.y);
+}
 //==================================================================================================================================================================================
 //=======================================================================                                  =========================================================================
 //=======================================================================     PODSTAWOWE KOMPONENTY GRY    =========================================================================
@@ -67,10 +74,13 @@ var gameComponent = {
   },
   setCameraPosition : function(){
     console.log('wywołano cameraPosition');
-    this.camera.position.set(10, 10, 10);
+    this.camera.position.set(10+player.positionX, 10+player.positionY, 10);
     this.camera.up = new THREE.Vector3( 0, 0, 1 );
-    this.camera.lookAt(0, 0, 0);
+    this.camera.lookAt(player.positionX, player.positionY, 0);
     this.scene.add(this.camera);
+    //this.camera.position.x += player.positionX;
+    //this.camera.position.y = player.positionY;
+    //this.camera.position.z = player.positionZ;
   } ,
   renderer : function(){
     console.log('wywołano renderer');
@@ -103,9 +113,9 @@ function playerComponent(dimensionX, dimensionY, dimensionZ, positionX, position
   this.geometry = new THREE.BoxGeometry(this.dimensionX, this.dimensionY, this.dimensionZ);
   this.material = new THREE.MeshLambertMaterial({color: this.color});
   this.mesh = new THREE.Mesh(this.geometry, this.material);
+  this.mesh.position.set(positionX, positionY, positionZ);
   
   
-  gameComponent.scene.add(this.mesh);
   return{
      
   xSpeed : this.xSpeed,
@@ -117,8 +127,11 @@ function playerComponent(dimensionX, dimensionY, dimensionZ, positionX, position
   geometry : this.geometry,
   material : this.material,
   mesh : this.mesh,
+  positionX : this.positionX = positionX,
+  positionY : this.positionY = positionY,
+  positionZ : this.positionZ = positionZ,
     playerAddToScene : function(){
-      this.mesh.position.set(positionX, positionY, positionZ);
+      gameComponent.scene.add(this.mesh);
     },
     playerCoordinates : function()
     {
@@ -189,7 +202,7 @@ const blockParameters = {
   1 : {color : 0x8888888},
   2 : {color : 0xe3bc68}
 }
-const mapSize = 100;
+const mapSize = 15;
 var map = [];
 
 
@@ -206,7 +219,19 @@ function blockComponent(dimensionX, dimensionY, dimensionZ, positionX, positionY
   this.material = new THREE.MeshLambertMaterial({color: this.color});
   this.mesh = new THREE.Mesh(this.geometry, this.material);
   this.mesh.position.set(positionX, positionY, positionZ);
-  gameComponent.scene.add(this.mesh);
+  
+  return{
+    positionX : this.positionX = positionX,
+    positionY : this.positionY = positionY,
+    positionZ : this.positionZ = positionZ,
+    mesh : this.mesh,
+  blockAddToScene : function(){
+    gameComponent.scene.add(this.mesh);
+  },
+  blockRemoveFromScene : function(){
+    gameComponent.scene.remove(this.mesh )
+  }
+  }
   
 }
 
@@ -216,7 +241,6 @@ function generarateMap(){
       map[x] = [];
       for (var y = 0; y < mapSize; y++) {
         let rand = Math.floor(Math.random() * (Object.keys(blockParameters).length - 0 )) + 0;
-        console.log('generateMap rand ' + rand);
           map[x][y] = new blockComponent(1,1,1,(x-(mapSize/2)),(y-(mapSize/2)),0,blockParameters[rand].color);
       }
   }
@@ -226,9 +250,25 @@ function generarateMap(){
 //==============================================================     GENEROWANIE BLOKÓW W ZASIĘGU KAMERY     =======================================================================
 //==============================================================                                             =======================================================================
 //==================================================================================================================================================================================
-function generateCameraView(){
-  var rangeLeft, rangeRight, rangeTop, rangeBottom;
-  console.log(gameComponent.camera.position.x.toFixed(3)-10+3)
+const range = 4;
+function generateCameraInitView(){
+  var
+  playerBlockPositionX = Math.round(mapSize/2 + player.mesh.position.x), 
+  playerBlockPositionY = Math.round(mapSize/2 + player.mesh.position.y);
+ // playerBlockPositionX = Math.round(mapSize/2 + 1), 
+//  playerBlockPositionY = Math.round(mapSize/2 + 1);
+console.log(playerBlockPositionX + " <> " + playerBlockPositionY);
+  for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
+    if(typeof map[x] !== 'undefined'){
+    for (var y = playerBlockPositionY - range; y <playerBlockPositionY+range; y++) {
+      console.log("X: " + x + "y: " + y);
+      if(typeof map[x][y] !== 'undefined'){
+        map[x][y].blockAddToScene();
+      }
+        
+    }
+    }
+  }
 }
 
 //==================================================================================================================================================================================
@@ -259,7 +299,10 @@ var gameStart = {
 function gameLoop(){
   requestAnimationFrame(gameLoop);
   player.playerMovement();
-  displaCameraPosition();
+  displayCameraPosition();
+  displayPlayerPosition();
+  //generateCameraView();
+  displayPlayerOnBlock();
   gameComponent.rendererUpdate();
 }
 
@@ -295,5 +338,12 @@ window.addEventListener('keydown', (e) => {
 //======================================================================                         ===================================================================================
 //==================================================================================================================================================================================
 
-gameInit(true);
-const player = new playerComponent(1,1,2,1,1,1.5,0xFF0000);
+//gameInit(true);
+const player = new playerComponent(1,1,2,7,7,1.5,0xFF0000);
+generarateMap();
+gameComponent.setAxlesHelper();
+gameComponent.setAambientLight();
+gameComponent.setDirectionalLight();
+gameComponent.setCameraPosition();
+generateCameraInitView();
+gameComponent.renderer();
