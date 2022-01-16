@@ -1,18 +1,39 @@
-//funkcja startowa
+
 
 function gameInit(axlesHelper) {
   (axlesHelper) ? gameComponent.setAxlesHelper() : null ;
   gameComponent.setAambientLight();
   gameComponent.setDirectionalLight();
   gameComponent.setCameraPosition();
+  generarateMap();
   gameComponent.renderer();
+  
 }
-//zmienne
-const width = 10,
+//==================================================================================================================================================================================
+//====================================================================                                         =====================================================================
+//====================================================================     FUNKCJE POMOCNICZE/DIAGNOSTYCZNE    =====================================================================
+//====================================================================                                         =====================================================================
+//==================================================================================================================================================================================
+
+function displaCameraPosition(){
+  document.getElementById("cameraPosition").innerHTML = 'X: ' + gameComponent.camera.position.x.toFixed(3) + 
+                                                      '<br/>Y: ' + gameComponent.camera.position.y.toFixed(3) +
+                                                      '<br/>Z: ' + gameComponent.camera.position.z.toFixed(3);
+}
+
+//==================================================================================================================================================================================
+//=======================================================================                                  =========================================================================
+//=======================================================================     PODSTAWOWE KOMPONENTY GRY    =========================================================================
+//=======================================================================                                  =========================================================================
+//==================================================================================================================================================================================
+
+
+//zmienne parametrów kamery
+const width = 7,
   height = width / (window.innerWidth / window.innerHeight);
   var keys = {};
   
-  
+//podstawowe komponenty gry  
 
 var gameComponent = {
   scene : new THREE.Scene(),
@@ -65,16 +86,11 @@ var gameComponent = {
 
 
 }
-const player = new playerComponent(1,1,2,1,1,1,0xFF0000);
-
-var gameStart = {
-  hideMainMenu : function(){
-  document.getElementById("startScreen").classList.add("hide");
-  document.getElementById("startScreen").classList.remove("show");
-  document.getElementById("buttonPanel").classList.add("show");
-  document.getElementById("buttonPanel").classList.remove("hide");
-  }
-}
+//==================================================================================================================================================================================
+//=====================================================================                          ===================================================================================
+//=====================================================================     KOMPONENTY GRACZA    ===================================================================================
+//=====================================================================                          ===================================================================================
+//==================================================================================================================================================================================
 
 function playerComponent(dimensionX, dimensionY, dimensionZ, positionX, positionY, positionZ,  color) {
   
@@ -87,11 +103,8 @@ function playerComponent(dimensionX, dimensionY, dimensionZ, positionX, position
   this.geometry = new THREE.BoxGeometry(this.dimensionX, this.dimensionY, this.dimensionZ);
   this.material = new THREE.MeshLambertMaterial({color: this.color});
   this.mesh = new THREE.Mesh(this.geometry, this.material);
-  this.mesh.position.set(positionX, positionY, positionZ);
-  this.mesh.position.x = positionX,
-  this.mesh.position.y = positionY,
-  this.mesh.position.z = positionZ,
-  console.log(".................. "  + this.mesh.position.x);
+  
+  
   gameComponent.scene.add(this.mesh);
   return{
      
@@ -104,7 +117,9 @@ function playerComponent(dimensionX, dimensionY, dimensionZ, positionX, position
   geometry : this.geometry,
   material : this.material,
   mesh : this.mesh,
-    
+    playerAddToScene : function(){
+      this.mesh.position.set(positionX, positionY, positionZ);
+    },
     playerCoordinates : function()
     {
       console.log(this.mesh);
@@ -164,43 +179,121 @@ function playerComponent(dimensionX, dimensionY, dimensionZ, positionX, position
   }
 }
 
-//const player = new playerComponent(1,1,2,1,1,1,0xFF0000);
-//wywołanie funkcji
-gameInit(true);
-
-//event listners
-document.getElementById("startButton").onclick = function() {  
-  gameStart.hideMainMenu();
-  
-  gameLoop();
+//==================================================================================================================================================================================
+//=====================================================================                          ===================================================================================
+//=====================================================================     KOMPONENTY BLOKÓW    ===================================================================================
+//=====================================================================                          ===================================================================================
+//==================================================================================================================================================================================
+const blockParameters = {
+  0 : {color : 0x44ff33},
+  1 : {color : 0x8888888},
+  2 : {color : 0xe3bc68}
 }
+const mapSize = 100;
+var map = [];
+
+
+
+console.log("długość listy " + Object.keys(blockParameters).length);
+
+
+function blockComponent(dimensionX, dimensionY, dimensionZ, positionX, positionY, positionZ,  color) {
+  this.dimensionX = dimensionX,
+  this.dimensionY = dimensionY,
+  this.dimensionZ = dimensionZ,
+  this.color = color;
+  this.geometry = new THREE.BoxGeometry(this.dimensionX, this.dimensionY, this.dimensionZ);
+  this.material = new THREE.MeshLambertMaterial({color: this.color});
+  this.mesh = new THREE.Mesh(this.geometry, this.material);
+  this.mesh.position.set(positionX, positionY, positionZ);
+  gameComponent.scene.add(this.mesh);
+  
+}
+
+function generarateMap(){
+  console.log('generateMap');
+    for (var x = 0; x < mapSize; x++) {
+      map[x] = [];
+      for (var y = 0; y < mapSize; y++) {
+        let rand = Math.floor(Math.random() * (Object.keys(blockParameters).length - 0 )) + 0;
+        console.log('generateMap rand ' + rand);
+          map[x][y] = new blockComponent(1,1,1,(x-(mapSize/2)),(y-(mapSize/2)),0,blockParameters[rand].color);
+      }
+  }
+}
+//==================================================================================================================================================================================
+//==============================================================                                             =======================================================================
+//==============================================================     GENEROWANIE BLOKÓW W ZASIĘGU KAMERY     =======================================================================
+//==============================================================                                             =======================================================================
+//==================================================================================================================================================================================
+function generateCameraView(){
+  var rangeLeft, rangeRight, rangeTop, rangeBottom;
+  console.log(gameComponent.camera.position.x.toFixed(3)-10+3)
+}
+
+//==================================================================================================================================================================================
+//=====================================================================                                 ============================================================================
+//=====================================================================     FUNKCJA STARTUJĄCA GRĘ      ============================================================================
+//=====================================================================                                 ============================================================================
+//==================================================================================================================================================================================
+
+var gameStart = {
+  hideMainMenu : function(){
+  document.getElementById("startScreen").classList.add("hide");
+  document.getElementById("startScreen").classList.remove("show");
+  document.getElementById("dataPanel").classList.add("show");
+  document.getElementById("dataPanel").classList.remove("hide");
+  document.getElementById("startShadow").classList.add("hide");
+  document.getElementById("startShadow").classList.remove("show");
+  player.playerAddToScene();
+  
+  }
+}
+
+//==================================================================================================================================================================================
+//==========================================================================                  ======================================================================================
+//==========================================================================     PĘTLA GRY    ======================================================================================
+//==========================================================================                  ======================================================================================
+//==================================================================================================================================================================================
 
 function gameLoop(){
   requestAnimationFrame(gameLoop);
-  
- player.playerMovement();
- //player.playerCoordinates();
-
- gameComponent.rendererUpdate();
+  player.playerMovement();
+  displaCameraPosition();
+  gameComponent.rendererUpdate();
 }
 
+//==================================================================================================================================================================================
+//======================================================================                        ====================================================================================
+//======================================================================     OBSŁUGA ZDARZEŃ    ====================================================================================
+//======================================================================                        ====================================================================================
+//==================================================================================================================================================================================
 
+//start gry
+document.getElementById("startButton").onclick = function() {  
+  gameStart.hideMainMenu();
+  gameLoop();
+}
 
+// obsługa sterowania
 window.addEventListener('keyup', (e) => {
-
   keys[e.key] = false;
   if(!keys[e.key]){
     (document.getElementById(e.key+"Key") != null) ? document.getElementById(e.key+"Key").classList.remove("keyClicked") : null ;
   }
-  
 });
-
 window.addEventListener('keydown', (e) => {
-    
-  keys[e.key] = true;
+    keys[e.key] = true;
   if(keys[[e.key]]){
     (document.getElementById(e.key+"Key") != null) ? document.getElementById(e.key+"Key").classList.add("keyClicked") : null ;
   }
- 
-  
 });
+
+//==================================================================================================================================================================================
+//======================================================================                         ===================================================================================
+//======================================================================     URUCHOMIENIE GRY    ===================================================================================
+//======================================================================                         ===================================================================================
+//==================================================================================================================================================================================
+
+gameInit(true);
+const player = new playerComponent(1,1,2,1,1,1.5,0xFF0000);
