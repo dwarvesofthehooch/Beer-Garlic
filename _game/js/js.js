@@ -36,7 +36,7 @@ function displayPlayerOnBlock(){
 
 
 //zmienne parametrów kamery
-const width = 7,
+const width = 5,
   height = width / (window.innerWidth / window.innerHeight);
   var keys = {};
   
@@ -76,7 +76,7 @@ var gameComponent = {
     console.log('wywołano cameraPosition');
     this.camera.position.set(10+player.positionX, 10+player.positionY, 10);
     this.camera.up = new THREE.Vector3( 0, 0, 1 );
-    this.camera.lookAt(player.positionX, player.positionY, 0);
+    this.camera.lookAt(player.positionX-1, player.positionY-1, 0);
     this.scene.add(this.camera);
     //this.camera.position.x += player.positionX;
     //this.camera.position.y = player.positionY;
@@ -202,7 +202,7 @@ const blockParameters = {
   1 : {color : 0x8888888},
   2 : {color : 0xe3bc68}
 }
-const mapSize = 500;
+const mapSize = 50;
 var map = [];
 
 
@@ -271,7 +271,67 @@ console.log(playerBlockPositionX + " <> " + playerBlockPositionY);
     }
   }
 }
-
+function changeCameraView(){
+  var
+  playerBlockPositionX = mapSize/2 + Math.round(player.mesh.position.x), 
+  playerBlockPositionY = mapSize/2 + Math.round(player.mesh.position.y);
+  
+  if(keys['w'] && keys['d']){
+    for(var y = playerBlockPositionY -range ; y < playerBlockPositionY+range; y++){
+      if(map[playerBlockPositionX - range] !== undefined && map[playerBlockPositionX + range] !== undefined) {
+        if(y>=0 && y<mapSize){
+          map[playerBlockPositionX - range][y].blockAddToScene();
+          map[playerBlockPositionX + range][y].blockRemoveFromScene();
+        }
+       }
+    }
+  } 
+  else if(keys['d'] && keys['s']){
+    for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
+      if(map[x]!== undefined){
+        if(map[x][playerBlockPositionY - range] !== undefined)
+          map[x][playerBlockPositionY - range].blockRemoveFromScene();
+        if(map[x][playerBlockPositionY + range] !== undefined)
+          map[x][playerBlockPositionY + range].blockAddToScene();
+      }
+    }
+  }
+  else if(keys['s'] && keys['a']){
+    for(var y = playerBlockPositionY -range ; y < playerBlockPositionY+range; y++){
+      if(map[playerBlockPositionX - range] !== undefined && map[playerBlockPositionX + range] !== undefined) {
+        if(y>=0 && y<mapSize){
+          map[playerBlockPositionX + range][y].blockAddToScene();
+          map[playerBlockPositionX - range][y].blockRemoveFromScene();
+        }
+       }
+    }
+  }else if(keys['a'] && keys['w']){
+    for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
+      if(map[x]!== undefined){
+        if(map[x][playerBlockPositionY + range] !== undefined)
+          map[x][playerBlockPositionY + range].blockRemoveFromScene();
+        if(map[x][playerBlockPositionY - range] !== undefined)
+          map[x][playerBlockPositionY - range].blockAddToScene();
+      }
+    }
+  }
+  else if (keys['w']) { //w
+   
+     
+      
+          
+    
+    
+    
+  }else if(keys['s']){
+   
+    
+  }else if(keys['a']){
+   
+  }else if(keys['d']){
+    
+  }
+}
 //==================================================================================================================================================================================
 //=====================================================================                                 ============================================================================
 //=====================================================================     FUNKCJA STARTUJĄCA GRĘ      ============================================================================
@@ -302,7 +362,7 @@ function gameLoop(){
   player.playerMovement();
   displayCameraPosition();
   displayPlayerPosition();
-  //generateCameraView();
+  changeCameraView();
   displayPlayerOnBlock();
   gameComponent.rendererUpdate();
 }
@@ -340,7 +400,7 @@ window.addEventListener('keydown', (e) => {
 //==================================================================================================================================================================================
 
 //gameInit(true);
-const player = new playerComponent(1,1,2,7,7,1.5,0xFF0000);
+const player = new playerComponent(1,1,1,0,0,1,0xFF0000);
 generarateMap();
 gameComponent.setAxlesHelper();
 gameComponent.setAambientLight();
