@@ -202,7 +202,7 @@ const blockParameters = {
   1 : {color : 0x8888888},
   2 : {color : 0xe3bc68}
 }
-const mapSize = 15;
+const mapSize = 500;
 var map = [];
 
 
@@ -242,6 +242,7 @@ function generarateMap(){
       for (var y = 0; y < mapSize; y++) {
         let rand = Math.floor(Math.random() * (Object.keys(blockParameters).length - 0 )) + 0;
           map[x][y] = new blockComponent(1,1,1,(x-(mapSize/2)),(y-(mapSize/2)),0,blockParameters[rand].color);
+          console.log('X: ' + x + " Y: " + y)
       }
   }
 }
