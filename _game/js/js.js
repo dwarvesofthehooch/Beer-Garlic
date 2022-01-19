@@ -251,7 +251,7 @@ function generarateMap(){
 //==============================================================     GENEROWANIE BLOKÓW W ZASIĘGU KAMERY     =======================================================================
 //==============================================================                                             =======================================================================
 //==================================================================================================================================================================================
-const range = 4;
+const range = 5;
 function generateCameraInitView(){
   var
   playerBlockPositionX = Math.round(mapSize/2 + player.mesh.position.x), 
@@ -316,20 +316,79 @@ function changeCameraView(){
     }
   }
   else if (keys['w']) { //w
-   
-     
-      
+    for(var y = playerBlockPositionY -range ; y < playerBlockPositionY+range; y++){
+      if(map[playerBlockPositionX - range] !== undefined && map[playerBlockPositionX + range] !== undefined) {
+        if(y>=0 && y<mapSize){
+          map[playerBlockPositionX - range][y].blockAddToScene();
+          map[playerBlockPositionX + range][y].blockRemoveFromScene();
+        }
+       }
+    }
+    for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
+      if(map[x]!== undefined){
+        if(map[x][playerBlockPositionY + range] !== undefined)
+          map[x][playerBlockPositionY + range].blockRemoveFromScene();
+        if(map[x][playerBlockPositionY - range] !== undefined)
+          map[x][playerBlockPositionY - range].blockAddToScene();
+      }
+    }
+    
           
     
     
     
   }else if(keys['s']){
-   
+    for(var y = playerBlockPositionY -range ; y < playerBlockPositionY+range; y++){
+      if(map[playerBlockPositionX - range] !== undefined && map[playerBlockPositionX + range] !== undefined) {
+        if(y>=0 && y<mapSize){
+          map[playerBlockPositionX + range][y].blockAddToScene();
+          map[playerBlockPositionX - range][y].blockRemoveFromScene();
+        }
+       }
+    }
+    for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
+      if(map[x]!== undefined){
+        if(map[x][playerBlockPositionY - range] !== undefined)
+          map[x][playerBlockPositionY - range].blockRemoveFromScene();
+        if(map[x][playerBlockPositionY + range] !== undefined)
+          map[x][playerBlockPositionY + range].blockAddToScene();
+      }
+    }
     
   }else if(keys['a']){
-   
+    for(var y = playerBlockPositionY -range ; y < playerBlockPositionY+range; y++){
+      if(map[playerBlockPositionX - range] !== undefined && map[playerBlockPositionX + range] !== undefined) {
+        if(y>=0 && y<mapSize){
+          map[playerBlockPositionX + range][y].blockAddToScene();
+          map[playerBlockPositionX - range][y].blockRemoveFromScene();
+        }
+       }
+    }
+    for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
+      if(map[x]!== undefined){
+        if(map[x][playerBlockPositionY + range] !== undefined)
+          map[x][playerBlockPositionY + range].blockRemoveFromScene();
+        if(map[x][playerBlockPositionY - range] !== undefined)
+          map[x][playerBlockPositionY - range].blockAddToScene();
+      }
+    }
   }else if(keys['d']){
-    
+    for(var y = playerBlockPositionY -range ; y < playerBlockPositionY+range; y++){
+      if(map[playerBlockPositionX - range] !== undefined && map[playerBlockPositionX + range] !== undefined) {
+        if(y>=0 && y<mapSize){
+          map[playerBlockPositionX - range][y].blockAddToScene();
+          map[playerBlockPositionX + range][y].blockRemoveFromScene();
+        }
+       }
+    }
+    for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
+      if(map[x]!== undefined){
+        if(map[x][playerBlockPositionY - range] !== undefined)
+          map[x][playerBlockPositionY - range].blockRemoveFromScene();
+        if(map[x][playerBlockPositionY + range] !== undefined)
+          map[x][playerBlockPositionY + range].blockAddToScene();
+      }
+    }
   }
 }
 //==================================================================================================================================================================================
