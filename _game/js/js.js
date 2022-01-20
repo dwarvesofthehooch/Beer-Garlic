@@ -254,11 +254,10 @@ function generarateMap(){
 const range = 5;
 function generateCameraInitView(){
   var
-  playerBlockPositionX = Math.round(mapSize/2 + player.mesh.position.x), 
-  playerBlockPositionY = Math.round(mapSize/2 + player.mesh.position.y);
+  playerBlockPositionX = parseInt(mapSize/2 + player.mesh.position.x), 
+  playerBlockPositionY = parseInt(mapSize/2 + player.mesh.position.y);
  // playerBlockPositionX = Math.round(mapSize/2 + 1), 
 //  playerBlockPositionY = Math.round(mapSize/2 + 1);
-console.log(playerBlockPositionX + " <> " + playerBlockPositionY);
   for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
     if(typeof map[x] !== 'undefined'){
     for (var y = playerBlockPositionY - range; y <playerBlockPositionY+range; y++) {
@@ -272,9 +271,32 @@ console.log(playerBlockPositionX + " <> " + playerBlockPositionY);
   }
 }
 function changeCameraView(){
+  playerBlockPositionX = parseInt(mapSize/2 + player.mesh.position.x), 
+  playerBlockPositionY = parseInt(mapSize/2 + player.mesh.position.y);
+
+  for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
+    if(typeof map[x] !== 'undefined'){
+      if(map[x][playerBlockPositionY - range-1] !== undefined)
+      map[x][playerBlockPositionY - range-1].blockRemoveFromScene();
+    if(map[x][playerBlockPositionY + range+1] !== undefined)
+      map[x][playerBlockPositionY + range+1].blockRemoveFromScene();
+    for (var y = playerBlockPositionY - range; y <playerBlockPositionY+range; y++) {
+      if(typeof map[x][y] !== 'undefined'){
+        map[x][y].blockAddToScene();
+        if(map[playerBlockPositionX - range-1] !== undefined)
+          map[playerBlockPositionX - range-1][y].blockRemoveFromScene();
+      if(map[playerBlockPositionX + range+1] !== undefined)
+      map[playerBlockPositionX + range+1][y].blockRemoveFromScene();
+      }
+        
+    }
+    }
+  }
+}
+/*function changeCameraView(){
   var
-  playerBlockPositionX = mapSize/2 + Math.round(player.mesh.position.x), 
-  playerBlockPositionY = mapSize/2 + Math.round(player.mesh.position.y);
+  playerBlockPositionX = parseInt(mapSize/2 + player.mesh.position.x), 
+  playerBlockPositionY = parseInt(mapSize/2 + player.mesh.position.y);
   
   if(keys['w'] && keys['d']){
     for(var y = playerBlockPositionY -range ; y < playerBlockPositionY+range; y++){
@@ -390,7 +412,7 @@ function changeCameraView(){
       }
     }
   }
-}
+}*/
 //==================================================================================================================================================================================
 //=====================================================================                                 ============================================================================
 //=====================================================================     FUNKCJA STARTUJĄCA GRĘ      ============================================================================
