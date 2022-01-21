@@ -251,7 +251,7 @@ function generarateMap(){
 //==============================================================     GENEROWANIE BLOKÓW W ZASIĘGU KAMERY     =======================================================================
 //==============================================================                                             =======================================================================
 //==================================================================================================================================================================================
-const range = 5;
+const range = 4;
 function generateCameraInitView(){
   var
   playerBlockPositionX = parseInt(mapSize/2 + player.mesh.position.x), 
@@ -278,141 +278,22 @@ function changeCameraView(){
     if(typeof map[x] !== 'undefined'){
       if(map[x][playerBlockPositionY - range-1] !== undefined)
       map[x][playerBlockPositionY - range-1].blockRemoveFromScene();
-    if(map[x][playerBlockPositionY + range+1] !== undefined)
-      map[x][playerBlockPositionY + range+1].blockRemoveFromScene();
+    if(map[x][playerBlockPositionY + range] !== undefined)
+      map[x][playerBlockPositionY + range].blockRemoveFromScene();
     for (var y = playerBlockPositionY - range; y <playerBlockPositionY+range; y++) {
       if(typeof map[x][y] !== 'undefined'){
         map[x][y].blockAddToScene();
-        if(map[playerBlockPositionX - range-1] !== undefined)
-          map[playerBlockPositionX - range-1][y].blockRemoveFromScene();
-      if(map[playerBlockPositionX + range+1] !== undefined)
-      map[playerBlockPositionX + range+1][y].blockRemoveFromScene();
+        if(map[playerBlockPositionX - range] !== undefined)
+          map[playerBlockPositionX - range][y].blockRemoveFromScene();
+      if(map[playerBlockPositionX + range] !== undefined)
+      map[playerBlockPositionX + range][y].blockRemoveFromScene();
       }
         
     }
     }
   }
 }
-/*function changeCameraView(){
-  var
-  playerBlockPositionX = parseInt(mapSize/2 + player.mesh.position.x), 
-  playerBlockPositionY = parseInt(mapSize/2 + player.mesh.position.y);
-  
-  if(keys['w'] && keys['d']){
-    for(var y = playerBlockPositionY -range ; y < playerBlockPositionY+range; y++){
-      if(map[playerBlockPositionX - range] !== undefined && map[playerBlockPositionX + range] !== undefined) {
-        if(y>=0 && y<mapSize){
-          map[playerBlockPositionX - range][y].blockAddToScene();
-          map[playerBlockPositionX + range][y].blockRemoveFromScene();
-        }
-       }
-    }
-  } 
-  else if(keys['d'] && keys['s']){
-    for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
-      if(map[x]!== undefined){
-        if(map[x][playerBlockPositionY - range] !== undefined)
-          map[x][playerBlockPositionY - range].blockRemoveFromScene();
-        if(map[x][playerBlockPositionY + range] !== undefined)
-          map[x][playerBlockPositionY + range].blockAddToScene();
-      }
-    }
-  }
-  else if(keys['s'] && keys['a']){
-    for(var y = playerBlockPositionY -range ; y < playerBlockPositionY+range; y++){
-      if(map[playerBlockPositionX - range] !== undefined && map[playerBlockPositionX + range] !== undefined) {
-        if(y>=0 && y<mapSize){
-          map[playerBlockPositionX + range][y].blockAddToScene();
-          map[playerBlockPositionX - range][y].blockRemoveFromScene();
-        }
-       }
-    }
-  }else if(keys['a'] && keys['w']){
-    for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
-      if(map[x]!== undefined){
-        if(map[x][playerBlockPositionY + range] !== undefined)
-          map[x][playerBlockPositionY + range].blockRemoveFromScene();
-        if(map[x][playerBlockPositionY - range] !== undefined)
-          map[x][playerBlockPositionY - range].blockAddToScene();
-      }
-    }
-  }
-  else if (keys['w']) { //w
-    for(var y = playerBlockPositionY -range ; y < playerBlockPositionY+range; y++){
-      if(map[playerBlockPositionX - range] !== undefined && map[playerBlockPositionX + range] !== undefined) {
-        if(y>=0 && y<mapSize){
-          map[playerBlockPositionX - range][y].blockAddToScene();
-          map[playerBlockPositionX + range][y].blockRemoveFromScene();
-        }
-       }
-    }
-    for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
-      if(map[x]!== undefined){
-        if(map[x][playerBlockPositionY + range] !== undefined)
-          map[x][playerBlockPositionY + range].blockRemoveFromScene();
-        if(map[x][playerBlockPositionY - range] !== undefined)
-          map[x][playerBlockPositionY - range].blockAddToScene();
-      }
-    }
-    
-          
-    
-    
-    
-  }else if(keys['s']){
-    for(var y = playerBlockPositionY -range ; y < playerBlockPositionY+range; y++){
-      if(map[playerBlockPositionX - range] !== undefined && map[playerBlockPositionX + range] !== undefined) {
-        if(y>=0 && y<mapSize){
-          map[playerBlockPositionX + range][y].blockAddToScene();
-          map[playerBlockPositionX - range][y].blockRemoveFromScene();
-        }
-       }
-    }
-    for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
-      if(map[x]!== undefined){
-        if(map[x][playerBlockPositionY - range] !== undefined)
-          map[x][playerBlockPositionY - range].blockRemoveFromScene();
-        if(map[x][playerBlockPositionY + range] !== undefined)
-          map[x][playerBlockPositionY + range].blockAddToScene();
-      }
-    }
-    
-  }else if(keys['a']){
-    for(var y = playerBlockPositionY -range ; y < playerBlockPositionY+range; y++){
-      if(map[playerBlockPositionX - range] !== undefined && map[playerBlockPositionX + range] !== undefined) {
-        if(y>=0 && y<mapSize){
-          map[playerBlockPositionX + range][y].blockAddToScene();
-          map[playerBlockPositionX - range][y].blockRemoveFromScene();
-        }
-       }
-    }
-    for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
-      if(map[x]!== undefined){
-        if(map[x][playerBlockPositionY + range] !== undefined)
-          map[x][playerBlockPositionY + range].blockRemoveFromScene();
-        if(map[x][playerBlockPositionY - range] !== undefined)
-          map[x][playerBlockPositionY - range].blockAddToScene();
-      }
-    }
-  }else if(keys['d']){
-    for(var y = playerBlockPositionY -range ; y < playerBlockPositionY+range; y++){
-      if(map[playerBlockPositionX - range] !== undefined && map[playerBlockPositionX + range] !== undefined) {
-        if(y>=0 && y<mapSize){
-          map[playerBlockPositionX - range][y].blockAddToScene();
-          map[playerBlockPositionX + range][y].blockRemoveFromScene();
-        }
-       }
-    }
-    for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
-      if(map[x]!== undefined){
-        if(map[x][playerBlockPositionY - range] !== undefined)
-          map[x][playerBlockPositionY - range].blockRemoveFromScene();
-        if(map[x][playerBlockPositionY + range] !== undefined)
-          map[x][playerBlockPositionY + range].blockAddToScene();
-      }
-    }
-  }
-}*/
+
 //==================================================================================================================================================================================
 //=====================================================================                                 ============================================================================
 //=====================================================================     FUNKCJA STARTUJĄCA GRĘ      ============================================================================
