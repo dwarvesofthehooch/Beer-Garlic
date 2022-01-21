@@ -97,7 +97,7 @@ body{
     color:rgba(0, 100, 0, 250);
 }
 
-#startButton{
+.menuButton{
     height: 100px;
     width: 20%;
     line-height: 100px;
@@ -106,7 +106,7 @@ body{
     display: block;
     margin-top: 50px;
 }
-#startButton:hover{
+.menuButton:hover{
     background-color: aquamarine;
 }
 .hide
