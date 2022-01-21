@@ -104,8 +104,8 @@ var gameComponent = {
 
 function playerComponent(dimensionX, dimensionY, dimensionZ, positionX, positionY, positionZ,  color) {
   
-  this.xSpeed = 0.1;
-  this.ySpeed = 0.1;
+  this.xSpeed = 0.07;
+  this.ySpeed = 0.07;
   this.dimensionX = dimensionX,
   this.dimensionY = dimensionY,
   this.dimensionZ = dimensionZ,
@@ -191,7 +191,41 @@ function playerComponent(dimensionX, dimensionY, dimensionZ, positionX, position
     }
   }
 }
-
+//==================================================================================================================================================================================
+//=====================================================================                              ===================================================================================
+//=====================================================================     KOMPONENTY PZREDMIOTÓW   ===================================================================================
+//=====================================================================                              ===================================================================================
+//==================================================================================================================================================================================
+const itemParameters = {
+  0 : {name : "kufel piwa", dimensionX : 0.2, dimensionY : 0.2, dimensionZ : 0.4, color : 0x0000ff},
+  1 : {color : 0x8888888},
+  2 : {color : 0xe3bc68}
+}
+function itemComponent(dimensionX, dimensionY, dimensionZ, positionX, positionY, positionZ,  color) {
+  this.dimensionX = dimensionX,
+  this.dimensionY = dimensionY,
+  this.dimensionZ = dimensionZ,
+  this.color = color;
+  this.geometry = new THREE.BoxGeometry(this.dimensionX, this.dimensionY, this.dimensionZ);
+  this.material = new THREE.MeshLambertMaterial({color: this.color});
+  this.mesh = new THREE.Mesh(this.geometry, this.material);
+  this.mesh.position.set(positionX, positionY, positionZ);
+  gameComponent.scene.add(this.mesh);
+  return{
+    positionX : this.positionX = positionX,
+    positionY : this.positionY = positionY,
+    positionZ : this.positionZ = positionZ,
+    mesh : this.mesh,
+  blockAddToScene : function(){
+    gameComponent.scene.add(this.mesh);
+  },
+  blockRemoveFromScene : function(){
+    gameComponent.scene.remove(this.mesh )
+  }
+  }
+  
+}
+var browar = new itemComponent(itemParameters[0].dimensionX, itemParameters[0].dimensionY, itemParameters[0].dimensionZ,2,2,1,itemParameters[0].color )
 //==================================================================================================================================================================================
 //=====================================================================                          ===================================================================================
 //=====================================================================     KOMPONENTY BLOKÓW    ===================================================================================
@@ -202,7 +236,7 @@ const blockParameters = {
   1 : {color : 0x8888888},
   2 : {color : 0xe3bc68}
 }
-const mapSize = 50;
+const mapSize = 500;
 var map = [];
 
 
@@ -251,7 +285,7 @@ function generarateMap(){
 //==============================================================     GENEROWANIE BLOKÓW W ZASIĘGU KAMERY     =======================================================================
 //==============================================================                                             =======================================================================
 //==================================================================================================================================================================================
-const range = 4;
+const range = 14;
 function generateCameraInitView(){
   var
   playerBlockPositionX = parseInt(mapSize/2 + player.mesh.position.x), 
