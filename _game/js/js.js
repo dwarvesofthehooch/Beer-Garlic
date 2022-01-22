@@ -1,6 +1,6 @@
- 
-let world; // CannonJs world
-let lastTime; // Last timestamp of animation
+var fixedTimeStep = 1.0 / 60.0; // seconds
+var maxSubSteps = 3;
+var lastTime;
 
 var player = {
     positionX : 10,
@@ -40,17 +40,18 @@ var gameComponent = {
     },
     setCameraPosition : function(onPlayer){
       this.camera.position.set(
-          10+(onPlayer) ? player.positionX : 0,          //x
-          10+ (onPlayer) ? player.positionY : 0,         //y
+          10,//+(onPlayer) ? player.positionX : 0,          //x
+          10,//+ (onPlayer) ? player.positionY : 0,         //y
           10);                                              //z
       this.camera.up = new THREE.Vector3( 0, 0, 1 );
-      this.camera.lookAt(player.positionX-1, player.positionY-1, 0);
+      this.camera.lookAt(0,0,0);
+      //this.camera.lookAt(player.positionX-1, player.positionY-1, 0);
       this.scene.add(this.camera);
     } ,
     setRenderer : function(){
-      console.log('wywołano renderer');
       this.render.setSize(window.innerWidth, window.innerHeight);
       this.render.render(this.scene, this.camera);
+      this.render.setAnimationLoop(animation);
       document.body.appendChild(this.render.domElement);
     },
     updateRenderer : function(){
@@ -66,6 +67,7 @@ var gameComponent = {
   
   }
 
+  var map = [];
 
   function blockComponent(dimensionX, dimensionY, dimensionZ, positionX, positionY, positionZ,  color, mass) {
     //parameters
@@ -82,7 +84,7 @@ var gameComponent = {
     //cannon js object config
 
     this.shape = new CANNON.Box(new CANNON.Vec3(this.dimensionX / 2, this.dimensionY / 2, this.dimensionZ /2));
-    this.body = new CANNON.Body(mass, shape);
+    this.body = new CANNON.Body({mass, shape : this.shape});
     this.body.position.set(positionX, positionY, positionZ);
     return{
       positionX : this.positionX = positionX,
@@ -92,7 +94,7 @@ var gameComponent = {
       body : this.body,
     blockAddToScene : function(){
       gameComponent.scene.add(this.mesh);
-      world.addBody(body);
+      gameComponent.world.addBody(this.body);
     },
     blockRemoveFromScene : function(){
       gameComponent.scene.remove(this.mesh )
@@ -100,39 +102,101 @@ var gameComponent = {
     }
     
   }
-  function generateBox(x, y, z, width, depth, falls) {
-    // ThreeJS
-    //const geometry = new THREE.BoxGeometry(width, boxHeight, depth);
-    //const color = new THREE.Color(`hsl(${30 + stack.length * 4}, 100%, 50%)`);
-    //const material = new THREE.MeshLambertMaterial({ color });
-    //const mesh = new THREE.Mesh(geometry, material);
-    //mesh.position.set(x, y, z);
-    //scene.add(mesh);
+
+  map[0] = new blockComponent(10,10,1,0,0,0,0x00ff00,0);
+  map[1] = new blockComponent(0.5,0.5,1,0.5,0.5,2,0x0000ff,1);
+  map[2] = new blockComponent(1,1,1,0,0,5,0xff0000,2);
+
+  map[0].blockAddToScene();
+  map[1].blockAddToScene();
+  map[2].blockAddToScene();
+  function animation(time) {
+   
   
-    // CannonJS
-    //const shape = new CANNON.Box(
-    //  new CANNON.Vec3(width / 2, boxHeight / 2, depth / 2)
-    //);
-    //let mass = falls ? 5 : 0; // If it shouldn't fall then setting the mass to zero will keep it stationary
-    //mass *= width / originalBoxSize; // Reduce mass proportionately by size
-    //mass *= depth / originalBoxSize; // Reduce mass proportionately by size
-    //const body = new CANNON.Body({ mass, shape });
-    //body.position.set(x, y, z);
-    //world.addBody(body);
-  
-    return {
-      threejs: mesh,
-      cannonjs: body,
-      width,
-      depth
-    };
+      updatePhysics(time);
+      gameComponent.updateRenderer();
+    
   }
 
+
+
+  function updatePhysics(time) {
+    //gameComponent.world.step(time / 1); // Step the physics world
+    if (lastTime !== undefined) {
+     var dt = (time - lastTime) / 1000;
+     gameComponent.world.step(fixedTimeStep, dt, maxSubSteps);
+  }
+    map.forEach((element) => {
+      element.mesh.position.copy(element.body.position);
+      element.mesh.quaternion.copy(element.body.quaternion);
+    })
+    // Copy coordinates from Cannon.js to Three.js
+   // overhangs.forEach((element) => {
+   //   element.threejs.position.copy(element.cannonjs.position);
+    //  element.threejs.quaternion.copy(element.cannonjs.quaternion);
+  //  });
+  lastTime = time;
+  }
+  
+
+  var gameStart = {
+    hideMainMenu : function(){
+    document.getElementById("startScreen").classList.add("hide");
+    document.getElementById("startScreen").classList.remove("show");
+    document.getElementById("dataPanel").classList.add("show");
+    document.getElementById("dataPanel").classList.remove("hide");
+    document.getElementById("startShadow").classList.add("hide");
+    document.getElementById("startShadow").classList.remove("show");
+   // player.playerAddToScene();
+    
+    }
+  }
+
+
+gameStart.hideMainMenu();
  // generarateMap();
 gameComponent.setAxlesHelper();
 gameComponent.setAambientLight();
 gameComponent.setDirectionalLight();
 gameComponent.setCameraPosition(false);
 //generateCameraInitView();
-gameComponent.setPhysics()
+gameComponent.setPhysics();
 gameComponent.setRenderer();
+
+
+/*
+// Setup our world
+var world = new CANNON.World();
+world.gravity.set(0, 0, -9.82); // m/s²
+
+// Create a sphere
+var radius = 1; // m
+var sphereBody = new CANNON.Body({
+   mass: 5, // kg
+   position: new CANNON.Vec3(0, 0, 10), // m
+   shape: new CANNON.Sphere(radius)
+});
+world.addBody(sphereBody);
+
+// Create a plane
+var groundBody = new CANNON.Body({
+    mass: 0 // mass == 0 makes the body static
+});
+var groundShape = new CANNON.Plane();
+groundBody.addShape(groundShape);
+world.addBody(groundBody);
+
+var fixedTimeStep = 1.0 / 60.0; // seconds
+var maxSubSteps = 3;
+
+// Start the simulation loop
+var lastTime;
+(function simloop(time){
+  requestAnimationFrame(simloop);
+  if (lastTime !== undefined) {
+     var dt = (time - lastTime) / 1000;
+     world.step(fixedTimeStep, dt, maxSubSteps);
+  }
+  console.log("Sphere z position: " + sphereBody.position.z);
+  lastTime = time;
+})();*/
