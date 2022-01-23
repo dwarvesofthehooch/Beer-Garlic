@@ -61,7 +61,6 @@ var gameComponent = {
       this.scene.add(this.directionalLight);
     },
    setCameraPosition : function(){
-    console.log('wywołano cameraPosition');
     this.camera.position.set(10+player.positionX, 10+player.positionY, 10);
     this.camera.up = new THREE.Vector3( 0, 0, 1 );
     this.camera.lookAt(player.positionX-1, player.positionY-1, 0);
@@ -292,6 +291,7 @@ function playerComponent(dimensionX, dimensionY, dimensionZ, positionX, position
 //==============================================================     GENEROWANIE BLOKÓW W ZASIĘGU KAMERY     =======================================================================
 //==============================================================                                             =======================================================================
 //==================================================================================================================================================================================
+
 const range = 14;
 function generateCameraInitView(){
   var
@@ -300,7 +300,6 @@ function generateCameraInitView(){
   for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
     if(typeof map[x] !== 'undefined'){
     for (var y = playerBlockPositionY - range; y <playerBlockPositionY+range; y++) {
-      console.log("X: " + x + "y: " + y);
       if(typeof map[x][y] !== 'undefined'){
         map[x][y].blockAddToScene();
       }
@@ -315,7 +314,6 @@ function generateCameraInitView(){
   // do wywalenia po ogarnięciu dodawania itemów do mapy
 }
 function changeCameraView(){
-  console.log('wywolanochangecamera')
   playerBlockPositionX = parseInt(mapSize/2 + player.mesh.position.x), 
   playerBlockPositionY = parseInt(mapSize/2 + player.mesh.position.y);
 
@@ -348,6 +346,12 @@ function changeCameraView(){
   //})
 }
 
+//==================================================================================================================================================================================
+//==============================================================================                   =================================================================================
+//==============================================================================     PĘTLA GRY     =================================================================================
+//==============================================================================                   =================================================================================
+//==================================================================================================================================================================================
+
   function gameLoop(time) {
    
     player.playerMovement();
@@ -360,14 +364,17 @@ function changeCameraView(){
     
   }
 
-
+//==================================================================================================================================================================================
+//==============================================================================                ====================================================================================
+//==============================================================================     FIZYKA     ====================================================================================
+//==============================================================================                ====================================================================================
+//==================================================================================================================================================================================
 
   function updatePhysics(time) {
-    //gameComponent.world.step(time / 1); // Step the physics world
     if (lastTime !== undefined) {
      var dt = (time - lastTime) / 1000;
      gameComponent.world.step(fixedTimeStep, dt, maxSubSteps);
-  }
+    }
     items.forEach((item) => {
       item.mesh.position.copy(item.body.position);
       item.mesh.quaternion.copy(item.body.quaternion);
@@ -377,16 +384,10 @@ function changeCameraView(){
         y.mesh.position.copy(y.body.position);
         y.mesh.quaternion.copy(y.body.quaternion);
       })
-      
     })
     player.mesh.position.copy(player.body.position);
     player.mesh.quaternion.copy(player.body.quaternion);
-    // Copy coordinates from Cannon.js to Three.js
-   // overhangs.forEach((element) => {
-   //   element.threejs.position.copy(element.cannonjs.position);
-    //  element.threejs.quaternion.copy(element.cannonjs.quaternion);
-  //  });
-  lastTime = time;
+    lastTime = time;
   }
 
 //==================================================================================================================================================================================
