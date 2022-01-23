@@ -93,7 +93,7 @@ var gameComponent = {
 //=====================================================================                              ===================================================================================
 //==================================================================================================================================================================================
 const itemParameters = {
-  0 : {name : "kufel piwa", dimensionX : 0.2, dimensionY : 0.2, dimensionZ : 0.4, color : 0x0000ff},
+  0 : {name : "kufel piwa", dimensionX : 0.4, dimensionY : 0.4, dimensionZ : 0.4, color : 0x0000ff},
   1 : {color : 0x8888888},
   2 : {color : 0xe3bc68}
 }
@@ -327,6 +327,7 @@ function generateCameraInitView(){
     }
     }
   }
+  // do wywalenia po ogarnięciu dodawania itemów do mapy
   items.forEach((item) => {
     item.itemAddToScene()
   })
@@ -356,15 +357,14 @@ function changeCameraView(){
   }
 
   // warunek do poprawy
-  items.forEach((item) => {
-    if(item.body.position.x > playerBlockPositionX -range && item.body.position.x < playerBlockPositionX + range &&
-      item.body.position.y > playerBlockPositionY -range && item.body.position.y < playerBlockPositionY + range){
-        item.itemAddToScene()
-      }else{
-        item.itemRemoveFromScene()
-      }
+  //items.forEach((item) => {
+  //  if(item.body.position.x > playerBlockPositionX -range && item.body.position.x < playerBlockPositionX + range){
+  //      item.itemAddToScene()
+   //   }else{
+  //      item.itemRemoveFromScene()
+   //   }
     
-  })
+  //})
 }
 
   function animation(time) {
