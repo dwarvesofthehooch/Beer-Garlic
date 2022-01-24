@@ -2,7 +2,6 @@ var fixedTimeStep = 1.0 / 60.0; // seconds
 var maxSubSteps = 3;
 var lastTime;
 var keys = {};
-
 //==================================================================================================================================================================================
 //====================================================================                                         =====================================================================
 //====================================================================     FUNKCJE POMOCNICZE/DIAGNOSTYCZNE    =====================================================================
@@ -358,6 +357,8 @@ function changeCameraView(){
     displayCameraPosition();
   displayPlayerPosition();
   changeCameraView();
+  resetMaterials();
+  hoverPieces();
       updatePhysics(time);
 /*
 	// update the picking ray with the camera and mouse position
@@ -464,17 +465,41 @@ window.addEventListener('keydown', (e) => {
 });
 
 //==================================================================================================================================================================================
-//======================================================================                        ====================================================================================
-//======================================================================     podswietlenie obiektu    ====================================================================================
-//======================================================================                        ====================================================================================
+//======================================================================                              ==============================================================================
+//======================================================================     podswietlenie obiektu    ==============================================================================
+//======================================================================                              ==============================================================================
 //==================================================================================================================================================================================
 const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
+const mouse = new THREE.Vector2(0,1);
+var selectedPiece = null;
 
+function onClick(event){
+   raycaster.setFromCamera(mouse, gameComponent.scene);
+   let intersects = raycaster.intersectObjects(gameComponent.scene.children);
+   if (intersects.length > 0){
+     selectedPiece = intersects[0];
+     intersects[0].object.material.color.setHex(0xffffff) ;
+   }
+}
+
+function resetMaterials(){
+  for (let i = 0; i < gameComponent.scene.children.length; i++){
+    if (gameComponent.scene.children[i].material){
+
+      gameComponent.scene.children[i].material.opacity = 1.0;
+    }
+  }
+}
+
+function hoverPieces(){
+  raycaster.setFromCamera(mouse, gameComponent.camera);
+  const intersects = raycaster.intersectObjects(gameComponent.scene.children);
+  for (let i = 0; i < intersects.length; i++){
+     intersects[i].object.material.transparent = true;
+     intersects[i].object.material.opacity = 0.5;
+  }
+}
 function onMouseMove( event ) {
-
-	// calculate mouse position in normalized device coordinates
-	// (-1 to +1) for both components
 
 	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
@@ -484,3 +509,4 @@ function onMouseMove( event ) {
 
 
 window.addEventListener( 'mousemove', onMouseMove, false );
+window.addEventListener('click', onClick); 
