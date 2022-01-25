@@ -140,6 +140,10 @@ for(var i = 0; i < 5; i ++){
   items[i] = new itemComponent(itemParameters[0].dimensionX, itemParameters[0].dimensionY, itemParameters[0].dimensionZ,i,i,1,itemParameters[0].color,0.1 )
  
 }
+function generateNewItem(id){
+  items.push(new itemComponent(itemParameters[id].dimensionX, itemParameters[id].dimensionY, itemParameters[id].dimensionZ,2,2,2,itemParameters[id].color,0.1 ))
+  items[items.length-1].itemAddToScene();
+}
 //==================================================================================================================================================================================
 //=====================================================================                          ===================================================================================
 //=====================================================================     KOMPONENTY GRACZA    ===================================================================================
@@ -328,16 +332,6 @@ function changeCameraView(){
       }
     }
   }
-
-  // warunek do poprawy, generowanie itemów w zasięgu mapy
-  //items.forEach((item) => {
-  //  if(item.body.position.x > playerBlockPositionX -range && item.body.position.x < playerBlockPositionX + range){
-  //      item.itemAddToScene()
-   //   }else{
-  //      item.itemRemoveFromScene()
-   //   }
-    
-  //})
 }
 
 //==================================================================================================================================================================================
@@ -461,6 +455,7 @@ function onClick(event){
    if (intersects.length > 0){
      selectedPiece = intersects[0];
      intersects[0].object.material.color.setHex(0xffffff) ;
+     generateNewItem(0)
    }
 }
 
