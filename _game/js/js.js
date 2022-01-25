@@ -66,9 +66,7 @@ var gameComponent = {
     this.scene.add(this.camera);
   } ,
   updateCameraPosition : function(){
-    console.log(player.body.position.x + " <> " + player.body.position.y)
     this.camera.position.set(10+player.body.position.x, 10+player.body.position.y, 10+player.body.position.z);
-    //this.camera.lookAt(player.positionX-1, player.positionY-1, 0);
   },
   setRenderer : function(){
     this.render.shadowMap.enabled = true;
@@ -186,14 +184,18 @@ function playerComponent(dimensionX, dimensionY, dimensionZ, positionX, position
     },
     playerMovement : function(){
       if(keys['w'] && keys['d']){
+        //this.body.force.x -= (this.xSpeed*2)
         this.body.position.x -= (this.xSpeed*2);
       } 
       else if(keys['d'] && keys['s']){
+        //this.body.force.y += (this.ySpeed*2)
         this.body.position.y += (this.ySpeed*2);
       }
       else if(keys['s'] && keys['a']){
+        //this.body.force.x += (this.xSpeed*2)
         this.body.position.x += (this.xSpeed*2);
       }else if(keys['a'] && keys['w']){
+        //this.body.force.y -= (this.ySpeed*2)
         this.body.position.y -= (this.ySpeed*2);
       }
       else if (keys['w']) {
@@ -347,27 +349,13 @@ function changeCameraView(){
   function gameLoop(time) {
    
     player.playerMovement();
+    updatePhysics(time);
     displayCameraPosition();
   displayPlayerPosition();
   changeCameraView();
   resetMaterials();
   hoverPieces();
-      updatePhysics(time);
       gameComponent.updateCameraPosition()
-/*
-	// update the picking ray with the camera and mouse position
-	raycaster.setFromCamera( mouse, gameComponent.camera );
-
-	// calculate objects intersecting the picking ray
-	const intersects = raycaster.intersectObjects( gameComponent.scene.children );
-
-	for ( let i = 0; i < intersects.length; i ++ ) {
-
-		intersects[ i ].object.material.color.set( 0xff0000 );
-
-	}
-
-*/
       gameComponent.updateRenderer();
     
   }
@@ -468,7 +456,7 @@ const mouse = new THREE.Vector2(0,1);
 var selectedPiece = null;
 
 function onClick(event){
-   raycaster.setFromCamera(mouse, gameComponent.scene);
+   raycaster.setFromCamera(mouse, gameComponent.camera);
    let intersects = raycaster.intersectObjects(gameComponent.scene.children);
    if (intersects.length > 0){
      selectedPiece = intersects[0];
