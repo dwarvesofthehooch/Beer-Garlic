@@ -65,17 +65,22 @@ var gameComponent = {
     this.camera.lookAt(player.positionX-1, player.positionY-1, 0);
     this.scene.add(this.camera);
   } ,
-    setRenderer : function(){
-      this.render.shadowMap.enabled = true;
-      this.render.setSize(window.innerWidth, window.innerHeight);
-      this.render.render(this.scene, this.camera);
+  updateCameraPosition : function(){
+    console.log(player.body.position.x + " <> " + player.body.position.y)
+    this.camera.position.set(10+player.body.position.x, 10+player.body.position.y, 10+player.body.position.z);
+    //this.camera.lookAt(player.positionX-1, player.positionY-1, 0);
+  },
+  setRenderer : function(){
+    this.render.shadowMap.enabled = true;
+    this.render.setSize(window.innerWidth, window.innerHeight);
+    this.render.render(this.scene, this.camera);
       
-      document.body.appendChild(this.render.domElement);
-    },
-    updateRenderer : function(){
-      this.render.setAnimationLoop(gameLoop);
-      this.render.render(this.scene, this.camera);
-    },
+    document.body.appendChild(this.render.domElement);
+  },
+  updateRenderer : function(){
+    this.render.setAnimationLoop(gameLoop);
+    this.render.render(this.scene, this.camera);
+  },
 
 //funkcje cannon.js
     setPhysics(){
@@ -182,39 +187,27 @@ function playerComponent(dimensionX, dimensionY, dimensionZ, positionX, position
     playerMovement : function(){
       if(keys['w'] && keys['d']){
         this.body.position.x -= (this.xSpeed*2);
-        gameComponent.camera.position.x -= (this.xSpeed*2);
       } 
       else if(keys['d'] && keys['s']){
         this.body.position.y += (this.ySpeed*2);
-        gameComponent.camera.position.y += (this.ySpeed*2);
       }
       else if(keys['s'] && keys['a']){
         this.body.position.x += (this.xSpeed*2);
-        gameComponent.camera.position.x += (this.xSpeed*2);
       }else if(keys['a'] && keys['w']){
         this.body.position.y -= (this.ySpeed*2);
-        gameComponent.camera.position.y -= (this.ySpeed*2);
       }
       else if (keys['w']) {
         this.body.position.y -= this.ySpeed;
         this.body.position.x -= this.xSpeed;
-        gameComponent.camera.position.y -= this.ySpeed;
-        gameComponent.camera.position.x -= this.xSpeed;
       }else if(keys['s']){
         this.body.position.y += this.ySpeed;
         this.body.position.x += this.xSpeed;
-        gameComponent.camera.position.y += this.ySpeed;
-        gameComponent.camera.position.x += this.xSpeed;
       }else if(keys['a']){
         this.body.position.y -= this.ySpeed;
         this.body.position.x += this.xSpeed;
-        gameComponent.camera.position.y -= this.ySpeed;
-        gameComponent.camera.position.x += this.xSpeed;
       }else if(keys['d']){
         this.body.position.y += this.ySpeed;
         this.body.position.x -= this.xSpeed;
-        gameComponent.camera.position.y += this.ySpeed;
-        gameComponent.camera.position.x -= this.xSpeed;
       }
     }
   }
@@ -360,6 +353,7 @@ function changeCameraView(){
   resetMaterials();
   hoverPieces();
       updatePhysics(time);
+      gameComponent.updateCameraPosition()
 /*
 	// update the picking ray with the camera and mouse position
 	raycaster.setFromCamera( mouse, gameComponent.camera );
@@ -431,7 +425,7 @@ function changeCameraView(){
 
   const player = new playerComponent(1,1,1,0,0,10,0xFF0000,60);
   generarateMap();
-  gameComponent.setAxlesHelper();
+  //gameComponent.setAxlesHelper();
   gameComponent.setAambientLight();
   gameComponent.setDirectionalLight();
   gameComponent.setCameraPosition(false);
@@ -494,10 +488,14 @@ function resetMaterials(){
 function hoverPieces(){
   raycaster.setFromCamera(mouse, gameComponent.camera);
   const intersects = raycaster.intersectObjects(gameComponent.scene.children);
-  for (let i = 0; i < intersects.length; i++){
-     intersects[i].object.material.transparent = true;
-     intersects[i].object.material.opacity = 0.5;
+  if (intersects.length > 0){
+    intersects[0].object.material.transparent = true;
+    intersects[0].object.material.opacity = 0.5;
   }
+ // for (let i = 0; i < intersects.length; i++){
+ //    intersects[i].object.material.transparent = true;
+ //    intersects[i].object.material.opacity = 0.5;
+ // }
 }
 function onMouseMove( event ) {
 
