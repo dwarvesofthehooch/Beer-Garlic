@@ -93,7 +93,58 @@ var gameComponent = {
     }
   
   }
+//==================================================================================================================================================================================
+//=====================================================================                              ===================================================================================
+//=====================================================================     KOMPONENTY MEBLI         =============================================================================
+//=====================================================================                              ===================================================================================
+//==================================================================================================================================================================================
 
+const furnitureParameters = {
+  0 : {name : "destylator", dimensionX : 1, dimensionY : 1, dimensionZ : 1, color : 0xcea200},
+ 
+}
+var furniture = [];
+
+function furnitureComponent(dimensionX, dimensionY, dimensionZ, positionX, positionY, positionZ,  color, mass) {
+   //parameters
+   this.dimensionX = dimensionX,
+   this.dimensionY = dimensionY,
+   this.dimensionZ = dimensionZ,
+   this.color = color;
+ 
+   //three js object config
+   this.geometry = new THREE.BoxGeometry(this.dimensionX, this.dimensionY, this.dimensionZ);
+   this.material = new THREE.MeshStandardMaterial({color: this.color});
+   this.mesh = new THREE.Mesh(this.geometry, this.material);
+   this.mesh.position.set(positionX, positionY, positionZ);
+   //cannon js object config
+ 
+   this.shape = new CANNON.Box(new CANNON.Vec3(this.dimensionX / 2, this.dimensionY / 2, this.dimensionZ /2));
+   this.body = new CANNON.Body({mass, shape : this.shape});
+   this.body.position.set(positionX, positionY, positionZ);
+  return{
+    positionX : this.positionX = positionX,
+    positionY : this.positionY = positionY,
+    positionZ : this.positionZ = positionZ,
+    mesh : this.mesh,
+    body : this.body,
+    furnitureAddToScene : function(){
+      gameComponent.playerRange.add(this.mesh )
+      gameComponent.world.addBody(this.body);
+  },
+  furnitureRemoveFromScene : function(){
+    gameComponent.scene.remove(this.mesh )
+    gameComponent.world.removeBody(this.body);
+  },
+  furnitureAction : function(){
+    items.push(new itemComponent(itemParameters[0].dimensionX, itemParameters[0].dimensionY, itemParameters[0].dimensionZ,this.positionX,this.positionY,this.positionZ+0.5,itemParameters[0].color,0.1 ))
+    items[items.length-1].itemAddToScene()
+  }
+  }
+  
+}
+  furniture.push(new furnitureComponent(furnitureParameters[0].dimensionX, furnitureParameters[0].dimensionY, furnitureParameters[0].dimensionZ,-3,-3,1,furnitureParameters[0].color,0.1 ))
+  furniture[0].furnitureAddToScene()
 //==================================================================================================================================================================================
 //=====================================================================                              ===================================================================================
 //=====================================================================     KOMPONENTY PZREDMIOTÓW   ===================================================================================
@@ -143,7 +194,7 @@ function itemComponent(dimensionX, dimensionY, dimensionZ, positionX, positionY,
 }
 for(var i = 0; i < 5; i ++){
   items[i] = new itemComponent(itemParameters[0].dimensionX, itemParameters[0].dimensionY, itemParameters[0].dimensionZ,i,i,1,itemParameters[0].color,0.1 )
- 
+  
 }
 //==================================================================================================================================================================================
 //=====================================================================                          ===================================================================================
@@ -470,8 +521,13 @@ function onClick(event){
    raycaster.setFromCamera(mouse, gameComponent.camera);
    let intersects = raycaster.intersectObjects(gameComponent.playerRange.children);
    if (intersects.length > 0){
-     selectedPiece = intersects[0];
-     intersects[0].object.material.color.setHex(0xffffff) ;
+     console.log(intersects[0].object.position.x);
+     for (i = 0; i < furniture.length; i++) {
+       if(furniture[i].mesh.position.x === intersects[0].object.position.x && furniture[i].mesh.position.y === intersects[0].object.position.y){
+        furniture[i].furnitureAction();
+       }
+     }
+     //intersects[0].object.material.color.setHex(0xffffff) ;
    }
 }
 
@@ -493,7 +549,6 @@ function resetMaterials(){
 function hoverPieces(){
   raycaster.setFromCamera(mouse, gameComponent.camera);
   const intersects = raycaster.intersectObjects(gameComponent.playerRange.children);
-  console.log(gameComponent);
   if (intersects.length > 0){
     intersects[0].object.material.transparent = true;
     intersects[0].object.material.opacity = 0.8;
