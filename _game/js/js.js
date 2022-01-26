@@ -347,15 +347,6 @@ function changeCameraView(){
       }
     }
   }
-  // warunek do poprawy, generowanie itemów w zasięgu mapy
-  //items.forEach((item) => {
-  //  if(item.body.position.x > playerBlockPositionX -range && item.body.position.x < playerBlockPositionX + range){
-  //      item.itemAddToScene()
-   //   }else{
-  //      item.itemRemoveFromScene()
-   //   }
-    
-  //})
 }
 
 //==================================================================================================================================================================================
@@ -375,20 +366,7 @@ function changeCameraView(){
   
       updatePhysics(time);
       gameComponent.updateCameraPosition()
-/*
-	// update the picking ray with the camera and mouse position
-	raycaster.setFromCamera( mouse, gameComponent.camera );
 
-	// calculate objects intersecting the picking ray
-	const intersects = raycaster.intersectObjects( gameComponent.scene.children );
-
-	for ( let i = 0; i < intersects.length; i ++ ) {
-
-		intersects[ i ].object.material.color.set( 0xff0000 );
-
-	}
-
-*/
       gameComponent.updateRenderer();
     
   }
@@ -520,10 +498,6 @@ function hoverPieces(){
     intersects[0].object.material.transparent = true;
     intersects[0].object.material.opacity = 0.8;
   }
- // for (let i = 0; i < intersects.length; i++){
- //    intersects[i].object.material.transparent = true;
- //    intersects[i].object.material.opacity = 0.5;
- // }
 }
 function onMouseMove( event ) {
 
