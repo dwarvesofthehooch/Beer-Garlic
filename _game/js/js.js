@@ -31,8 +31,6 @@ function displayPlayerOnBlock(){
 var gameComponent = {
 
 // zmienne three.js
-    viewRange : new THREE.Group(),
-    playerRange : new THREE.Group(),
     scene : new THREE.Scene(),                                      
     axesHelper : new THREE.AxesHelper( 10 ),                        
     ambientLight : new THREE.AmbientLight(0xffffff, 0,6),
@@ -69,11 +67,8 @@ var gameComponent = {
   } ,
   updateCameraPosition : function(){
     this.camera.position.set(10+player.body.position.x, 10+player.body.position.y, 10+player.body.position.z);
-    //this.camera.lookAt(player.positionX-1, player.positionY-1, 0);
   },
   setRenderer : function(){
-    this.scene.add(this.viewRange);
-    this.scene.add(this.playerRange);
     this.render.shadowMap.enabled = true;
     this.render.setSize(window.innerWidth, window.innerHeight);
     this.render.render(this.scene, this.camera);
@@ -145,6 +140,10 @@ for(var i = 0; i < 5; i ++){
   items[i] = new itemComponent(itemParameters[0].dimensionX, itemParameters[0].dimensionY, itemParameters[0].dimensionZ,i,i,1,itemParameters[0].color,0.1 )
  
 }
+function generateNewItem(id){
+  items.push(new itemComponent(itemParameters[id].dimensionX, itemParameters[id].dimensionY, itemParameters[id].dimensionZ,2,2,2,itemParameters[id].color,0.1 ))
+  items[items.length-1].itemAddToScene();
+}
 //==================================================================================================================================================================================
 //=====================================================================                          ===================================================================================
 //=====================================================================     KOMPONENTY GRACZA    ===================================================================================
@@ -189,14 +188,18 @@ function playerComponent(dimensionX, dimensionY, dimensionZ, positionX, position
     },
     playerMovement : function(){
       if(keys['w'] && keys['d']){
+        //this.body.force.x -= (this.xSpeed*2)
         this.body.position.x -= (this.xSpeed*2);
       } 
       else if(keys['d'] && keys['s']){
+        //this.body.force.y += (this.ySpeed*2)
         this.body.position.y += (this.ySpeed*2);
       }
       else if(keys['s'] && keys['a']){
+        //this.body.force.x += (this.xSpeed*2)
         this.body.position.x += (this.xSpeed*2);
       }else if(keys['a'] && keys['w']){
+        //this.body.force.y -= (this.ySpeed*2)
         this.body.position.y -= (this.ySpeed*2);
       }
       else if (keys['w']) {
@@ -255,19 +258,11 @@ function playerComponent(dimensionX, dimensionY, dimensionZ, positionX, position
       mesh : this.mesh,
       body : this.body,
       blockAddToScene : function(){
-        gameComponent.viewRange.add(this.mesh);
+        gameComponent.scene.add(this.mesh);
         gameComponent.world.addBody(this.body);
       },
       blockRemoveFromScene : function(){
-        gameComponent.viewRange.remove(this.mesh )
-        gameComponent.world.removeBody(this.body);
-      },
-      blockAddToPlayerRange : function(){
-        gameComponent.playerRange.add(this.mesh);
-        gameComponent.world.addBody(this.body);
-      },
-      blockRemoveFromPlayerRange : function(){
-        gameComponent.playerRange.remove(this.mesh )
+        gameComponent.scene.remove(this.mesh )
         gameComponent.world.removeBody(this.body);
       }
     }
@@ -295,7 +290,7 @@ function playerComponent(dimensionX, dimensionY, dimensionZ, positionX, position
 //==============================================================                                             =======================================================================
 //==================================================================================================================================================================================
 
-const range = 5;
+const range = 14;
 function generateCameraInitView(){
   var
   playerBlockPositionX = parseInt(mapSize/2 + player.mesh.position.x), 
@@ -317,16 +312,16 @@ function generateCameraInitView(){
   // do wywalenia po ogarnięciu dodawania itemów do mapy
 }
 function changeCameraView(){
-  playerBlockPositionX = Math.floor(mapSize/2 + player.mesh.position.x), 
-  playerBlockPositionY = Math.floor(mapSize/2 + player.mesh.position.y);
+  playerBlockPositionX = parseInt(mapSize/2 + player.mesh.position.x), 
+  playerBlockPositionY = parseInt(mapSize/2 + player.mesh.position.y);
 
-  for(let x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
+  for(var x = playerBlockPositionX -range ; x < playerBlockPositionX+range; x++){
     if(typeof map[x] !== 'undefined'){
       if(map[x][playerBlockPositionY - range-1] !== undefined)
         map[x][playerBlockPositionY - range-1].blockRemoveFromScene();
       if(map[x][playerBlockPositionY + range] !== undefined)
         map[x][playerBlockPositionY + range].blockRemoveFromScene();
-      for (let y = playerBlockPositionY - range; y <playerBlockPositionY+range; y++) {
+      for (var y = playerBlockPositionY - range; y <playerBlockPositionY+range; y++) {
         if(typeof map[x][y] !== 'undefined'){
           map[x][y].blockAddToScene();
           if(map[playerBlockPositionX - range] !== undefined)
@@ -337,25 +332,6 @@ function changeCameraView(){
       }
     }
   }
-  for(let x = playerBlockPositionX -1 ; x <= playerBlockPositionX+2; x++){
-    for (let y = playerBlockPositionY - 1; y <=playerBlockPositionY+2; y++) {
-      if(map[x]!== undefined){
-        if(map[x][y]!== undefined){
-          map[x][y].blockRemoveFromScene();
-          map[x][y].blockAddToPlayerRange();
-        }
-      }
-    }
-  }
-  // warunek do poprawy, generowanie itemów w zasięgu mapy
-  //items.forEach((item) => {
-  //  if(item.body.position.x > playerBlockPositionX -range && item.body.position.x < playerBlockPositionX + range){
-  //      item.itemAddToScene()
-   //   }else{
-  //      item.itemRemoveFromScene()
-   //   }
-    
-  //})
 }
 
 //==================================================================================================================================================================================
@@ -367,28 +343,13 @@ function changeCameraView(){
   function gameLoop(time) {
    
     player.playerMovement();
+    updatePhysics(time);
     displayCameraPosition();
   displayPlayerPosition();
+  changeCameraView();
   resetMaterials();
   hoverPieces();
-  changeCameraView();
-  
-      updatePhysics(time);
       gameComponent.updateCameraPosition()
-/*
-	// update the picking ray with the camera and mouse position
-	raycaster.setFromCamera( mouse, gameComponent.camera );
-
-	// calculate objects intersecting the picking ray
-	const intersects = raycaster.intersectObjects( gameComponent.scene.children );
-
-	for ( let i = 0; i < intersects.length; i ++ ) {
-
-		intersects[ i ].object.material.color.set( 0xff0000 );
-
-	}
-
-*/
       gameComponent.updateRenderer();
     
   }
@@ -490,35 +451,29 @@ var selectedPiece = null;
 
 function onClick(event){
    raycaster.setFromCamera(mouse, gameComponent.camera);
-   let intersects = raycaster.intersectObjects(gameComponent.playerRange.children);
+   let intersects = raycaster.intersectObjects(gameComponent.scene.children);
    if (intersects.length > 0){
      selectedPiece = intersects[0];
      intersects[0].object.material.color.setHex(0xffffff) ;
+     generateNewItem(0)
    }
 }
 
 function resetMaterials(){
-  for (let i = 0; i < gameComponent.playerRange.children.length; i++){
-    if (gameComponent.playerRange.children[i].material){
+  for (let i = 0; i < gameComponent.scene.children.length; i++){
+    if (gameComponent.scene.children[i].material){
 
-      gameComponent.playerRange.children[i].material.opacity = 1.0;
-    }
-  }
-  for (let i = 0; i < gameComponent.viewRange.children.length; i++){
-    if (gameComponent.viewRange.children[i].material){
-
-      gameComponent.viewRange.children[i].material.opacity = 1.0;
+      gameComponent.scene.children[i].material.opacity = 1.0;
     }
   }
 }
 
 function hoverPieces(){
   raycaster.setFromCamera(mouse, gameComponent.camera);
-  const intersects = raycaster.intersectObjects(gameComponent.playerRange.children);
-  console.log(gameComponent);
+  const intersects = raycaster.intersectObjects(gameComponent.scene.children);
   if (intersects.length > 0){
     intersects[0].object.material.transparent = true;
-    intersects[0].object.material.opacity = 0.8;
+    intersects[0].object.material.opacity = 0.5;
   }
  // for (let i = 0; i < intersects.length; i++){
  //    intersects[i].object.material.transparent = true;
