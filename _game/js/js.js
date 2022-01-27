@@ -143,7 +143,7 @@ function furnitureComponent(dimensionX, dimensionY, dimensionZ, positionX, posit
   }
   
 }
-  furniture.push(new furnitureComponent(1, 1, 1,-3,-3,1,furnitureParameters[0].color,0.1 ))
+  furniture.push(new furnitureComponent(furnitureParameters[0].dimensionX, furnitureParameters[0].dimensionY, furnitureParameters[0].dimensionZ,-3,-3,1,furnitureParameters[0].color,0.1 ))
   furniture[0].furnitureAddToScene()
 //==================================================================================================================================================================================
 //=====================================================================                              ===================================================================================
@@ -514,12 +514,12 @@ window.addEventListener('keydown', (e) => {
 //======================================================================                              ==============================================================================
 //==================================================================================================================================================================================
 const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2(0,1);
+const mouse = new THREE.Vector2(0,1 );
 var selectedPiece = null;
 
 function onClick(event){
    raycaster.setFromCamera(mouse, gameComponent.camera);
-   let intersects = raycaster.intersectObjects(gameComponent.viewRange.children);
+   let intersects = raycaster.intersectObjects(gameComponent.playerRange.children);
    if (intersects.length > 0){
      console.log(intersects[0].object.position.x);
      for (i = 0; i < furniture.length; i++) {
@@ -532,10 +532,10 @@ function onClick(event){
 }
 
 function resetMaterials(){
-  for (let i = 0; i < gameComponent.viewRange.children.length; i++){
-    if (gameComponent.viewRange.children[i].material){
+  for (let i = 0; i < gameComponent.playerRange.children.length; i++){
+    if (gameComponent.playerRange.children[i].material){
 
-      gameComponent.viewRange.children[i].material.opacity = 1.0;
+      gameComponent.playerRange.children[i].material.opacity = 1.0;
     }
   }
   for (let i = 0; i < gameComponent.viewRange.children.length; i++){
@@ -554,17 +554,16 @@ function hoverPieces(){
   if (intersects.length > 0){
     intersects[0].object.material.transparent = true;
     intersects[0].object.material.opacity = 0.8;
-  }
+
+//console.log(mouse.x + "<>" + mouse.y);
 }
 }
+}
+window.addEventListener( 'mouseMove', onMouseMove,false );
 function onMouseMove( event ) {
 
 	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-  
+  console.log(mouse.x + "<>" + mouse.y);
+
 }
-
-
-
-window.addEventListener( 'mousemove', onMouseMove, false );
-window.addEventListener('click', onClick); 
