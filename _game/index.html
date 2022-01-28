@@ -8,7 +8,7 @@
 <title>Beer and Gralic</title>    
 </head>
 <body>
-    <div id = "dataPanel" class="hide">
+    <!--<div id = "dataPanel" class="hide">
         <div id = "buttonPanel" >
             <div id = "qKey" class="keyButton">Q</div>
             <div id = "wKey" class="keyButton">W</div>
@@ -21,13 +21,23 @@
         <div id ="cameraPosition"></div>
         <div id ="playerPosition"></div>
         <div id ="playerOnBlock"></div>
-    </div>
-    <div id="startShadow" class="show"></div>
-    <div id =  "startScreen" class="show"><p>Beer and Gralic</p>
-        <button type="button" id="startButton" class="menuButton">Start game</button>
-        <button type="button" id="optionButton" class="menuButton">Option</button>
+    </div>-->
+    <div id ="menuIntro"><p>Dwarfs of the Hooch</p></div>
+    <div id="menuShadow" class="hide"></div>
+    <div id =  "menuWindow" class="hide"><p>Beer and Gralic</p>
+        <button type="button" id="buttonStart" class="menuButton hide">Start game</button>
+        <button type="button" id="buttonOption" class="menuButton hide">Option</button>
+        <button type="button" id="buttonReturn" class="menuButton hide" >Return</button>
+        <button type="button" id="buttonCredits" class="menuButton hide" >LISTA "PŁAC" XD</button>
         <footer> Dwarves of the Hooch <img src="./textures/logo.png"/></footer>
     </div>
+    <div id = "windowOptions" class="hide">
+        OPCJE GRY
+    </div>
+    <div id = "windowCredits" class="hide">
+        KREDYTY
+    </div>
+    <button id = "buttonMenuInGame" type="button" class="hide">Menu</button>
     
     
     
@@ -35,5 +45,5 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script defer src = "https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
 <script defer src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r125/three.js"></script>
-<script defer src = "./js/js.js"></script>
+<script defer src = "./js/main.js"></script>
 </html>

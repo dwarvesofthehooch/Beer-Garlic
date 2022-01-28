@@ -4,9 +4,28 @@ body{
     margin: 0;
     background-color: #000;
 }
+#menuIntro{
+    background-color: black;
+    color:white;
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-image:url("./../textures/dwarf.png");
+    background-position:top center;
+    background-repeat: no-repeat;
+    z-index: 999999;
+	
+}
 
+#menuIntro > p{
+    text-align: center;
+    margin-top: 400px;
+    font-size: 60px;
+}
 
-#startScreen{
+#menuWindow{
     font-family: 'Press Start 2P', cursive;
     color: #fff;
     position: absolute;
@@ -21,14 +40,14 @@ body{
     text-shadow: 5px 5px #000;
 
 }
-#startScreen > p{
+#menuWindow > p{
     width: 100%;
     text-align: center;
     padding: 20px 0;
     font-size: 100px; 
     margin: 0;
 }
-#startShadow{
+#menuShadow{
     position: absolute;
     top:0;
     bottom:0;
@@ -135,4 +154,11 @@ footer{
 
 footer > img{
     height: 100px;
+}
+
+#menuButton{
+    position: absolute;
+    top:0;
+    left: 0;
+    background-color: aqua;
 }
