@@ -130,11 +130,11 @@ body{
 }
 .hide
 {
-    visibility: hidden;
+    display: none;
 }
 .show
 {
-    visibility: visible;
+    display:block;
 }
 footer{
     position: absolute;
@@ -156,9 +156,17 @@ footer > img{
     height: 100px;
 }
 
-#menuButton{
+#buttonMenuInGame{
     position: absolute;
     top:0;
     left: 0;
     background-color: aqua;
+}
+#windowOptions, #windowCredits{
+    position: absolute;
+    width: 200px;
+    height: 300px;
+    background-color: chartreuse;
+    top:calc(50% - 150px);
+    left:calc(50% - 100px);
 }

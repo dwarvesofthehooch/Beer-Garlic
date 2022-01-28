@@ -42,20 +42,64 @@ var menuComponent = {
         this.hideMenuElement(this.windowCredits);
         this.hideMenuElement(this.buttonMenuInGame);
     },
-    startGame : function(){}
+    hideMenu : function(){
+        this.hideMenuElement(this.menuShadow);
+        this.hideMenuElement(this.menuWindow);
+        this.hideMenuElement(this.buttonStart);
+        this.hideMenuElement(this.buttonOption);
+        this.hideMenuElement(this.buttonReturn);
+        this.hideMenuElement(this.buttonCredits);
+        this.hideMenuElement(this.windowOption);
+        this.hideMenuElement(this.windowCredits);
+        this.showMenuElement(this.buttonMenuInGame);
+    },
+    showMenu : function(){
+        this.showMenuElement(this.menuShadow);
+        this.showMenuElement(this.menuWindow);
+        this.hideMenuElement(this.buttonStart);
+        this.showMenuElement(this.buttonOption);
+        this.showMenuElement(this.buttonReturn);
+        this.showMenuElement(this.buttonCredits);
+        this.hideMenuElement(this.windowOption);
+        this.hideMenuElement(this.windowCredits);
+        this.hideMenuElement(this.buttonMenuInGame);
+    },
+    showOptionWindow : function(){
+        this.showMenuElement(this.windowOption);
+    },
+    hideOptionWindow: function(){
+        this.hideMenuElement(this.windowOption);
+    },
+    showCreditsWindow : function(){
+        this.showMenuElement(this.windowCredits);
+    },
+    hideCreditsWindow: function(){
+        this.hideMenuElement(this.windowCredits);
+    },
 }
 
 
 
-      $(document).ready(function() {
+      $(document).ready(function() { //jak mozesz znajdz ekwiwalent tego zapytania jQuery w pure JS
           menuComponent.startMenu();
-          setTimeout(function(){menuComponent.hideIntro();}, 2000);
-          //menuComponent.hideIntro();
+          setTimeout(function(){menuComponent.hideIntro();}, 2000);// delirka 2s, zeby było widać logo xD
      });
 
      menuComponent.buttonStart.onclick = function() {
-
+        menuComponent.hideMenu();
      }
+     menuComponent.buttonMenuInGame.onclick = function(){
+         menuComponent.showMenu();
+     }
+     menuComponent.buttonReturn.onclick = function(){
+         menuComponent.hideMenu();
+     }
+     menuComponent.buttonOption.onclick = function(){
+        menuComponent.showOptionWindow();
+    }
+    menuComponent.buttonCredits.onclick = function(){
+        menuComponent.showCreditsWindow();
+    }
 
 
       //start gry
