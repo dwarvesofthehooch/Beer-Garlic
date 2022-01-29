@@ -18,7 +18,7 @@ var gameComponent = {
     axesHelper : new THREE.AxesHelper( 10 ),                        
     ambientLight : new THREE.AmbientLight(0xffffff, 0,6),
     directionalLight : new THREE.DirectionalLight(0xffffff, 1),
-    loadManager : new THREE.LoadingManager(),  // menager wczytywania tekstur
+   // loadManager : new THREE.LoadingManager(),  // menager wczytywania tekstur
     textureLoader : new THREE.TextureLoader(), // wczytywacz tekstur
     render : new THREE.WebGLRenderer({antialias : true}),
     camera : new THREE.OrthographicCamera(
@@ -67,6 +67,7 @@ var gameComponent = {
           updateRenderer : function(){
             this.render.setAnimationLoop(this.gameLoop);
             this.render.render(this.scene, this.camera);
+            console.log('update');
           },
         
         //funkcje cannon.js
@@ -95,14 +96,14 @@ var gameComponent = {
                 this.lastTime = time;
               },
               gameLoop(time) {
-                player.playerMovement();
-                displayCameraPosition();
-                displayPlayerPosition();
-                resetMaterials();
-                hoverPieces();
-                changeCameraView();
-                updatePhysics(time);
-                gameComponent.updateCameraPosition()
+               // player.playerMovement();
+              //  displayCameraPosition();
+           //     displayPlayerPosition();
+            //    resetMaterials();
+          //      hoverPieces();
+          //      changeCameraView();
+        //        updatePhysics(time);
+        //        gameComponent.updateCameraPosition()
                 gameComponent.updateRenderer();
                 
               }
@@ -200,24 +201,25 @@ var menuComponent = {
         
         
         var geometry = new THREE.BoxGeometry(1,1,1);
-        const material = new THREE.MeshBasicMaterial({
-            //color: 0xFF8844,
-            map: gameComponent.textureLoader.load('https://raw.githubusercontent.com/dwarvesofthehooch/Beer-Garlic/main/_game/grass_t.png'),
+        var material = new THREE.MeshBasicMaterial({
+            
+          //color: 0xFF8844,
+           map: gameComponent.textureLoader.load('http://127.0.0.1:5500/textures/grass_s.png'),
           });
 
         const materials = [
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('https://threejs.org/manual/examples/resources/images/flower-1.jpg')}),
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('https://threejs.org/manual/examples/resources/images/flower-1.jpg')}),
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('https://threejs.org/manual/examples/resources/images/flower-1.jpg')}),
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('https://threejs.org/manual/examples/resources/images/flower-1.jpg')}),
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('https://threejs.org/manual/examples/resources/images/flower-1.jpg')}),
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('https://threejs.org/manual/examples/resources/images/flower-1.jpg')}),
+            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://127.0.0.1:5500/textures/grass_s.png')}),
+            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://127.0.0.1:5500/textures/grass_s.png')}),
+            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://127.0.0.1:5500/textures/grass_s.png')}),
+            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://127.0.0.1:5500/textures/grass_s.png')}),
+            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://127.0.0.1:5500/textures/grass_s.png')}),
+            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://127.0.0.1:5500/textures/grass_s.png')}),
           ];
 
           //gameComponent.loadManager.onLoad = () => {
-        var mesh = new THREE.Mesh(geometry, material);
+        var mesh = new THREE.Mesh(geometry, materials);
             mesh.position.set(0,0,0);
-            gameComponent.viewRange.add(mesh )
+            gameComponent.scene.add(mesh )
          // };
 
 
@@ -261,3 +263,4 @@ var menuComponent = {
     }
 
 
+    gameComponent.updateRenderer();
