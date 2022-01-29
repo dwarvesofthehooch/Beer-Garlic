@@ -161,6 +161,9 @@ footer > img{
     top:0;
     left: 0;
     background-color: aqua;
+    z-index: 1;
+    margin: 0;
+    
 }
 #windowOptions, #windowCredits{
     position: absolute;

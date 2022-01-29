@@ -475,7 +475,7 @@ function changeCameraView(){
 
   const player = new playerComponent(1,1,1,0,0,10,0xFF0000,60);
   generarateMap();
-  //gameComponent.setAxlesHelper();
+  gameComponent.setAxlesHelper();
   gameComponent.setAambientLight();
   gameComponent.setDirectionalLight();
   gameComponent.setCameraPosition(false);
