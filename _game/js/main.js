@@ -202,7 +202,7 @@ var menuComponent = {
         var geometry = new THREE.BoxGeometry(1,1,1);
         const material = new THREE.MeshBasicMaterial({
             //color: 0xFF8844,
-            map: gameComponent.textureLoader.load('https://threejs.org/manual/examples/resources/images/flower-1.jpg'),
+            map: gameComponent.textureLoader.load('https://raw.githubusercontent.com/dwarvesofthehooch/Beer-Garlic/main/_game/grass_t.png'),
           });
 
         const materials = [
