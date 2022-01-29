@@ -195,7 +195,7 @@ var menuComponent = {
       
         
         gameComponent.setAxlesHelper();
-        gameComponent.setAambientLight();
+      //  gameComponent.setAambientLight();
         gameComponent.setDirectionalLight();
         gameComponent.setCameraPosition(false);
         
@@ -204,16 +204,16 @@ var menuComponent = {
         var material = new THREE.MeshBasicMaterial({
             
           //color: 0xFF8844,
-           map: gameComponent.textureLoader.load('http://127.0.0.1:5500/textures/grass_s.png'),
+           map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_s.png'),
           });
 
         const materials = [
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://127.0.0.1:5500/textures/grass_s.png')}),
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://127.0.0.1:5500/textures/grass_s.png')}),
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://127.0.0.1:5500/textures/grass_s.png')}),
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://127.0.0.1:5500/textures/grass_s.png')}),
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://127.0.0.1:5500/textures/grass_s.png')}),
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://127.0.0.1:5500/textures/grass_s.png')}),
+            new THREE.MeshStandardMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_s.png')}),
+            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_s.png')}),
+            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_s.png')}),
+            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_s.png')}),
+            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_t.png')}),
+            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_s.png')}),
           ];
 
           //gameComponent.loadManager.onLoad = () => {
