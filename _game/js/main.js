@@ -18,7 +18,7 @@ var gameComponent = {
     axesHelper : new THREE.AxesHelper( 10 ),                        
     ambientLight : new THREE.AmbientLight(0xffffff, 0,5),
     directionalLight : new THREE.DirectionalLight(0xffffff, 0.9),
-   // loadManager : new THREE.LoadingManager(),  // menager wczytywania tekstur
+    loadManager : new THREE.LoadingManager(),  // menager wczytywania tekstur
     textureLoader : new THREE.TextureLoader(), // wczytywacz tekstur
     render : new THREE.WebGLRenderer({antialias : true}),
     
@@ -200,54 +200,28 @@ var menuComponent = {
         this.hideMenuElement(this.windowCredits);
     },
     generateMenuView : function(){
-      
+        blockComponent.loadTextures()
         
         gameComponent.setAxlesHelper();
         gameComponent.setAambientLight();
         gameComponent.setDirectionalLight();
         gameComponent.setCameraPosition(false);
         
-        
-        var geometry = new THREE.BoxGeometry(1,1,1);
-
-        const materials = [
-            new THREE.MeshStandardMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_s.png')}),
-            [],
-            new THREE.MeshStandardMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_s.png')}),
-            [],
-            new THREE.MeshStandardMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_t.png')}),
-            [],
-          ];
-          materials[0].map.center.set(.5, .5);
-          materials[0].map.rotation = THREE.MathUtils.degToRad(90);
-          materials[2].map.center.set(.5, .5);
-          materials[2].map.rotation = THREE.MathUtils.degToRad(180);
-          materials[4].map.center.set(.5, .5);
-          materials[4].map.rotation = THREE.MathUtils.degToRad(180);
-          //gameComponent.loadManager.onLoad = () => {
-        
-        function addbox(x,y,z){
-          var mesh = new THREE.Mesh(geometry, materials);
-          mesh.castShadow = true; //default is false      //cień
-          mesh.receiveShadow = true; //default            //cień
-          mesh.position.set(x,y,z);
-            gameComponent.scene.add(mesh )
-        }
         for(let x = -5;x < 5; x++){
           for(let y = -5;y < 5; y++){
-            addbox(x,y,0);
+            blockComponent.generateBlock(0,x,y,0);
           }
         }
-        addbox(-4,2,1);
-        addbox(-3,2,1);   
-        addbox(-2,2,1);
-        addbox(-1,2,1);
-        addbox(-4,1,1);   
-        addbox(-3,1,1);
-        addbox(-2,1,1);
-        addbox(-3,0,1);
-        addbox(-3,2,2); 
-        addbox(-3,1,2);  
+        blockComponent.generateBlock(0,-4,2,1);
+        blockComponent.generateBlock(0,-3,2,1);   
+        blockComponent.generateBlock(0,-2,2,1);
+        blockComponent.generateBlock(0,-1,2,1);
+        blockComponent.generateBlock(0,-4,1,1);   
+        blockComponent.generateBlock(0,-3,1,1);
+        blockComponent.generateBlock(0,-2,1,1);
+        blockComponent.generateBlock(0,-3,0,1);
+        blockComponent.generateBlock(0,-3,2,2); 
+        blockComponent.generateBlock(0,-3,1,2);  
          // };
 
 
@@ -259,7 +233,84 @@ var menuComponent = {
 }
 
 
+var blockComponent = {
+  blockData : {
+/*  ID          NAME          top textures quantity       side textures quantity              COLOR       */
+    0 : {   name : 'dirt'  ,        tt : 5,                       st : 2,               color : 0x44ff33},
+    1 : {   name : 'stone' ,        tt : 0,                       st : 0,               color : 0x8888888},
+    2 : {   name : 'sand'  ,        tt : 0,                       st : 0,               color : 0xe3bc68}
+  },
+  blockGeometry : new THREE.BoxGeometry(1,1,1),
+  sideTextures90 : [],
+  sideTextures180 : [],
+  topTextures : [],
 
+//funkcje
+
+  loadTextures  : function() {
+   for(let b = 0; b < Object.keys(this.blockData).length;b++){
+     this.sideTextures90[b] = [];
+     this.sideTextures180[b] = [];
+     this.topTextures[b] = [];
+     for(let t = 0; t < this.blockData[b].st; t++){
+        this.sideTextures90[b].push(new THREE.MeshStandardMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/'+b+'_s_'+t+'.png')}),)
+        this.sideTextures180[b].push(new THREE.MeshStandardMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/'+b+'_s_'+t+'.png')}),)
+      }
+      for(let t = 0; t < this.blockData[b].tt; t++){
+        this.topTextures[b].push(new THREE.MeshStandardMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/'+b+'_t_'+t+'.png')}),)
+     }
+    }
+  },
+  /*randTextures : function(blockID){
+    //tutaj jest zrobione idiotycznie, mianowicie tekstury 90 stopni są przarzyste, a 180 nieparzyste. trzeba ogarnąć jak toto obrócić
+    //rozwiązania póki co:
+    //dubel tablicy z bokami i jedzie
+    //najpierw wybieramy id bloku z tablicy, potem id tekstury, wrzucamy teksturę do randText
+          let randtext = [];
+            randtext[0] = this.sideTextures90[blockID][Math.floor(Math.random()*(this.sideTextures90[blockID].length))];
+            randtext[0].map.center.set(.5, .5);
+            randtext[0].map.rotation = THREE.MathUtils.degToRad(90);
+
+            randtext[2] = this.sideTextures180[blockID][Math.floor(Math.random()*(this.sideTextures180[blockID].length))];
+            randtext[2].map.center.set(.5, .5);
+            randtext[2].map.rotation = THREE.MathUtils.degToRad(180);
+
+            randtext[4] = this.topTextures[blockID][Math.floor(Math.random()*(this.topTextures[blockID].length))]
+            randtext[4].map.center.set(.5, .5);
+            randtext[4].map.rotation = THREE.MathUtils.degToRad(180);
+          return randtext;
+        },*/
+    generateBlock : function(blockID, posX, posY, posZ){
+      let rand90, rand180, randtop, textures = [], geometry, mesh;
+
+      rand90 = Math.floor(Math.random()*(blockComponent.sideTextures90[blockID].length));
+      rand180 = Math.floor(Math.random()*(this.sideTextures180[blockID].length));
+      randtop = Math.floor(Math.random()*(this.topTextures[blockID].length));
+
+      textures[0] = this.sideTextures90[blockID][rand90];
+      textures[0].map.center.set(.5, .5);
+      textures[0].map.rotation = THREE.MathUtils.degToRad(90);
+
+      textures[2] = this.sideTextures180[blockID][rand180];
+      textures[2].map.center.set(.5, .5);
+      textures[2].map.rotation = THREE.MathUtils.degToRad(180);
+
+      textures[4] = this.topTextures[blockID][randtop];
+      textures[4].map.center.set(.5, .5);
+      textures[4].map.rotation = THREE.MathUtils.degToRad(180);
+
+      geometry = new THREE.BoxGeometry(1,1,1);
+      mesh = new THREE.Mesh(geometry, textures)
+      //mesh.castShadow = true; //default is false      //cień
+      //mesh.receiveShadow = true; //default            //cień
+      mesh.position.set(posX,posY,posZ);
+      gameComponent.scene.add(mesh)
+
+      return blockID + ':' + rand90 + ':' + rand180 + ':' + randtop;
+    }
+ 
+
+}
 
 
 
@@ -289,6 +340,4 @@ var menuComponent = {
     menuComponent.buttonCredits.onclick = function(){
         menuComponent.showCreditsWindow();
     }
-
-
     gameComponent.updateRenderer();
