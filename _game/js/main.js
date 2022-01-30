@@ -21,6 +21,7 @@ var gameComponent = {
    // loadManager : new THREE.LoadingManager(),  // menager wczytywania tekstur
     textureLoader : new THREE.TextureLoader(), // wczytywacz tekstur
     render : new THREE.WebGLRenderer({antialias : true}),
+    
     camera : new THREE.OrthographicCamera(
       5 * -2, // left
       5 * 2, // right
@@ -44,7 +45,12 @@ var gameComponent = {
             },
             setDirectionalLight : function(){
               this.directionalLight.position.set(10, 20, 25);
+              this.directionalLight.castShadow = true;                          //cień
               this.scene.add(this.directionalLight);
+              this.directionalLight.shadow.mapSize.width = 512; // default      //cień
+              this.directionalLight.shadow.mapSize.height = 512; // default     //cień
+              this.directionalLight.shadow.camera.near = 0.5; // default        //cień
+              this.directionalLight.shadow.camera.far = 500; // default         //cień
             },
     
             setCameraPosition : function(){
@@ -58,7 +64,8 @@ var gameComponent = {
             },
           setRenderer : function(){
             this.scene.add(this.viewRange);
-            this.render.shadowMap.enabled = true;
+            this.render.shadowMap.enabled = true;                               //cień
+            this.render.shadowMap.type = THREE.PCFSoftShadowMap;                //cień
             this.render.setSize(window.innerWidth, window.innerHeight);
             this.render.render(this.scene, this.camera);
               
@@ -66,6 +73,7 @@ var gameComponent = {
           },
           updateRenderer : function(){
             this.render.setAnimationLoop(this.gameLoop);
+            
             this.render.render(this.scene, this.camera);
           },
         
@@ -103,6 +111,7 @@ var gameComponent = {
           //      changeCameraView();
         //        updatePhysics(time);
         //        gameComponent.updateCameraPosition()
+        
                 gameComponent.updateRenderer();
                 
               }
@@ -194,17 +203,12 @@ var menuComponent = {
       
         
         gameComponent.setAxlesHelper();
-      //gameComponent.setAambientLight();
+        gameComponent.setAambientLight();
         gameComponent.setDirectionalLight();
         gameComponent.setCameraPosition(false);
         
         
         var geometry = new THREE.BoxGeometry(1,1,1);
-        var material = new THREE.MeshBasicMaterial({
-            
-          //color: 0xFF8844,
-           map: gameComponent.textureLoader.load('http://localhost:5500/textures/1.png'),
-          });
 
         const materials = [
             new THREE.MeshStandardMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_s.png')}),
@@ -224,6 +228,8 @@ var menuComponent = {
         
         function addbox(x,y,z){
           var mesh = new THREE.Mesh(geometry, materials);
+          mesh.castShadow = true; //default is false      //cień
+          mesh.receiveShadow = true; //default            //cień
           mesh.position.set(x,y,z);
             gameComponent.scene.add(mesh )
         }
