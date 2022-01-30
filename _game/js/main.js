@@ -16,8 +16,8 @@ var gameComponent = {
     playerRange : new THREE.Group(),
     scene : new THREE.Scene(),                                      
     axesHelper : new THREE.AxesHelper( 10 ),                        
-    ambientLight : new THREE.AmbientLight(0xffffff, 0,6),
-    directionalLight : new THREE.DirectionalLight(0xffffff, 1),
+    ambientLight : new THREE.AmbientLight(0xffffff, 0,5),
+    directionalLight : new THREE.DirectionalLight(0xffffff, 0.9),
    // loadManager : new THREE.LoadingManager(),  // menager wczytywania tekstur
     textureLoader : new THREE.TextureLoader(), // wczytywacz tekstur
     render : new THREE.WebGLRenderer({antialias : true}),
@@ -67,7 +67,6 @@ var gameComponent = {
           updateRenderer : function(){
             this.render.setAnimationLoop(this.gameLoop);
             this.render.render(this.scene, this.camera);
-            console.log('update');
           },
         
         //funkcje cannon.js
@@ -195,7 +194,7 @@ var menuComponent = {
       
         
         gameComponent.setAxlesHelper();
-      //  gameComponent.setAambientLight();
+      //gameComponent.setAambientLight();
         gameComponent.setDirectionalLight();
         gameComponent.setCameraPosition(false);
         
@@ -204,22 +203,45 @@ var menuComponent = {
         var material = new THREE.MeshBasicMaterial({
             
           //color: 0xFF8844,
-           map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_s.png'),
+           map: gameComponent.textureLoader.load('http://localhost:5500/textures/1.png'),
           });
 
         const materials = [
             new THREE.MeshStandardMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_s.png')}),
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_s.png')}),
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_s.png')}),
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_s.png')}),
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_t.png')}),
-            new THREE.MeshBasicMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_s.png')}),
+            [],
+            new THREE.MeshStandardMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_s.png')}),
+            [],
+            new THREE.MeshStandardMaterial({map: gameComponent.textureLoader.load('http://localhost:5500/textures/grass_t.png')}),
+            [],
           ];
-
+          materials[0].map.center.set(.5, .5);
+          materials[0].map.rotation = THREE.MathUtils.degToRad(90);
+          materials[2].map.center.set(.5, .5);
+          materials[2].map.rotation = THREE.MathUtils.degToRad(180);
+          materials[4].map.center.set(.5, .5);
+          materials[4].map.rotation = THREE.MathUtils.degToRad(180);
           //gameComponent.loadManager.onLoad = () => {
-        var mesh = new THREE.Mesh(geometry, materials);
-            mesh.position.set(0,0,0);
+        
+        function addbox(x,y,z){
+          var mesh = new THREE.Mesh(geometry, materials);
+          mesh.position.set(x,y,z);
             gameComponent.scene.add(mesh )
+        }
+        for(let x = -5;x < 5; x++){
+          for(let y = -5;y < 5; y++){
+            addbox(x,y,0);
+          }
+        }
+        addbox(-4,2,1);
+        addbox(-3,2,1);   
+        addbox(-2,2,1);
+        addbox(-1,2,1);
+        addbox(-4,1,1);   
+        addbox(-3,1,1);
+        addbox(-2,1,1);
+        addbox(-3,0,1);
+        addbox(-3,2,2); 
+        addbox(-3,1,2);  
          // };
 
 
